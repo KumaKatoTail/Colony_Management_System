@@ -12,12 +12,17 @@ using Colony_Management_System.Models.DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-var connectionString = "Server=sql7.freesqldatabase.com;Database=your_database_name;User=your_username;Password=your_password;Port=3306;";
-var context = new KoloniaDbContext(connectionString);
-// Add services to the container.
+
+// Rejestracja DbContext z po³¹czeniem do bazy danych
+builder.Services.AddDbContext<KoloniaDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Server=sql7.freesqldatabase.com;Port=3306;Database=sql7759030;Uid=sql7759030;Pwd=wYaz8HFV7h;Charset=utf8;");
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(5, 5, 62)));
+});
+// Dodaj us³ugi do kontenera
 builder.Services.AddControllersWithViews(); // Obs³uguje MVC (kontrolery + widoki)
 
-// Dodajemy us³ugi wymagane do autentykacji i autoryzacji JWT
+// Dodaj us³ugi autentykacji i autoryzacji JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -33,7 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Dodajemy Swagger
+// Dodaj Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -68,17 +73,12 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddTransient<IAccountRepository, AccountRepository>(); // Rejestracja repozytorium kont
 builder.Services.AddTransient<IUserService, UserService>(); // Rejestracja serwisu autoryzacji u¿ytkownika
 
-// Zaktualizowana konfiguracja DbContext do MySQL
-builder.Services.AddDbContext<KoloniaDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("Server=sql7.freesqldatabase.com;Database=your_database_name;User=your_username;Password=your_password;Port=3306;"),
-    new MySqlServerVersion(new Version(5, 5, 62))));  // U¿ywamy wersji MySQL 5.5.62
-
 // Rejestracja innych serwisów, które mog¹ byæ potrzebne
 builder.Services.AddHttpContextAccessor(); // Jeœli u¿ywasz HttpContext w innych serwisach
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Konfiguracja HTTP request pipeline
 #if DEBUG
 app.UseSwagger();
 app.UseSwaggerUI(c =>
