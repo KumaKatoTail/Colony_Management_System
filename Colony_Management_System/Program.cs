@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -29,19 +30,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("xLvOEFU2wtLi5tirZm7e6kGWC8txB3RhHF6JmeUJiBQ="))
         };
     });
-
-//// Konfiguracja CORS
-//var isCors = "_Cors";
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: isCors,
-//                      policy =>
-//                      {
-//                          policy.WithOrigins("http://your-allowed-origin.com") // Okreœl dozwolone domeny
-//                                .WithHeaders("Authorization", "Content-Type")
-//                                .WithMethods("GET", "POST", "PUT", "DELETE");
-//                      });
-//});
 
 // Dodajemy Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -78,8 +66,10 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddTransient<IAccountRepository, AccountRepository>(); // Rejestracja repozytorium kont
 builder.Services.AddTransient<IUserAuthService, UserAuthService>(); // Rejestracja serwisu autoryzacji u¿ytkownika
 
+// Zaktualizowana konfiguracja DbContext do MySQL
 builder.Services.AddDbContext<KoloniaDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+    new MySqlServerVersion(new Version(5, 5, 62))));  // U¿ywamy wersji MySQL 5.5.62
 
 // Rejestracja innych serwisów, które mog¹ byæ potrzebne
 builder.Services.AddHttpContextAccessor(); // Jeœli u¿ywasz HttpContext w innych serwisach
@@ -108,9 +98,6 @@ app.UseSwaggerUI(c =>
 // Konfiguracja autentykacji i autoryzacji
 app.UseAuthentication();
 app.UseAuthorization();
-
-// U¿ywanie CORS
-//app.UseCors(isCors);
 
 // Mapowanie kontrolerów
 app.MapControllers();
