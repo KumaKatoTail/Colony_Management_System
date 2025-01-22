@@ -23,6 +23,6 @@ namespace Colony_Management_System.Models
         [StringLength(6)]
         public string Kod { get; set; }
 
-        public ICollection<Ulica> Ulice { get; set; }
+        public ICollection<Ulica> Ulica { get; set; }
     }
 }

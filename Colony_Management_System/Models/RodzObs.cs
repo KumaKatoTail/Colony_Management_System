@@ -18,6 +18,6 @@ namespace Colony_Management_System.Models
         [StringLength(20)]
         public string Nazwa { get; set; }
 
-        public ICollection<Obserwacja> Obserwacje { get; set; }
+        public ICollection<Obserwacja> Obserwacja { get; set; }
     }
 }

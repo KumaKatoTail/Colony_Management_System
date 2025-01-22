@@ -76,7 +76,7 @@ namespace Colony_Management_System.Models
         public RodzajPlatnosci RodzajPlatnosci { get; set; }
 
         [ForeignKey("StatusId")]
-        public StatusPlatnosci Status { get; set; }
+        public StatusPlatnosci StatusPlatnosci { get; set; }
 
         [ForeignKey("WalutaId")]
         public Waluta Waluta { get; set; }

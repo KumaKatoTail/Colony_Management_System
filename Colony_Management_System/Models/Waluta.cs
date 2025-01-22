@@ -22,6 +22,6 @@ namespace Colony_Management_System.Models
         [StringLength(10)]
         public string Symbol { get; set; }
 
-        public ICollection<Platnosc> Platnosci { get; set; }
+        public ICollection<Platnosc> Platnosc { get; set; }
     }
 }

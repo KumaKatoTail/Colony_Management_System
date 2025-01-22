@@ -34,6 +34,6 @@ namespace Colony_Management_System.Models
         [ForeignKey("KontoId")]
         public Konto Konto { get; set; }
 
-        public ICollection<OpiekunGrupa> Grupy { get; set; }
+        public ICollection<OpiekunGrupa> OpiekunGrupa { get; set; }
     }
 }

@@ -25,6 +25,6 @@ namespace Colony_Management_System.Models
         [ForeignKey("MiastoId")]
         public Miasto Miasto { get; set; }
 
-        public ICollection<Adres> Adresy { get; set; }
+        public ICollection<Adres> Adres { get; set; }
     }
 }

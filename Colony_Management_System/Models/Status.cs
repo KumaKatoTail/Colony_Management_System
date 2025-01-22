@@ -17,6 +17,6 @@ namespace Colony_Management_System.Models
         [StringLength(20)]
         public string Nazwa { get; set; }
 
-        public ICollection<KoloniaDziecko> KoloniaDzieci { get; set; }
+        public ICollection<KoloniaDziecko> KoloniaDziecko { get; set; }
     }
 }

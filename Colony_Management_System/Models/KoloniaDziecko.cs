@@ -24,15 +24,17 @@ namespace Colony_Management_System.Models
         [JsonProperty("statusId")]
         public int StatusId { get; set; }
 
-        [ForeignKey("DzieckoId")]
+        [Column("grupaId")]
+        [JsonProperty("grupaId")]
+        public int GrupaId { get; set; }
+
+        // Navigation properties
         public Dziecko Dziecko { get; set; }
-
-        [ForeignKey("KoloniaId")]
         public Kolonia Kolonia { get; set; }
-
-        [ForeignKey("StatusId")]
         public Status Status { get; set; }
+        public Grupa Grupa { get; set; } // Add the navigation property for Grupa
 
-        public ICollection<Platnosc> Platnosci { get; set; }
+        // One-to-many relationship with Platnosc
+        public ICollection<Platnosc> Platnosc { get; set; }
     }
 }

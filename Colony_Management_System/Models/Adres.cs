@@ -27,8 +27,8 @@ namespace Colony_Management_System.Models
         [ForeignKey("UlicaId")]
         public Ulica Ulica { get; set; }
 
-        public ICollection<Dziecko> Dzieci { get; set; }
-        public ICollection<Rodzic> Rodzice { get; set; }
-        public ICollection<Firma> Firmy { get; set; }
+        public ICollection<Dziecko> Dziecko { get; set; }
+        public ICollection<Rodzic> Rodzic { get; set; }
+        public ICollection<Firma> Firma { get; set; }
     }
 }

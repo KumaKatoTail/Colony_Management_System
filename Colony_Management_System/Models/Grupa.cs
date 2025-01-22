@@ -32,7 +32,7 @@ namespace Colony_Management_System.Models
         [ForeignKey("KoloniaId")]
         public Kolonia Kolonia { get; set; }
 
-        public ICollection<KoloniaDziecko> KoloniaDzieci { get; set; }
-        public ICollection<OpiekunGrupa> Opiekunowie { get; set; }
+        public ICollection<KoloniaDziecko> KoloniaDziecko { get; set; }
+        public ICollection<OpiekunGrupa> OpiekunGrupa { get; set; }
     }
 }

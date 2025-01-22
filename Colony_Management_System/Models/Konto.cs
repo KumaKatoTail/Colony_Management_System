@@ -28,8 +28,8 @@ namespace Colony_Management_System.Models
         [ForeignKey("UprId")]
         public Upr Upr { get; set; }
 
-        public ICollection<Administrator> Administratorzy { get; set; }
-        public ICollection<Opiekun> Opiekunowie { get; set; }
-        public ICollection<Rodzic> Rodzice { get; set; }
+        public ICollection<Administrator> Administrator { get; set; }
+        public ICollection<Opiekun> Opiekun { get; set; }
+        public ICollection<Rodzic> Rodzic { get; set; }
     }
 }

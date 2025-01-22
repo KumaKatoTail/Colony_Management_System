@@ -18,6 +18,6 @@ namespace Colony_Management_System.Models
         [StringLength(100)]
         public string Nazwa { get; set; }
 
-        public ICollection<Platnosc> Platnosci { get; set; }
+        public ICollection<Platnosc> Platnosc { get; set; }
     }
 }

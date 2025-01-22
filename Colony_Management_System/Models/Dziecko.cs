@@ -40,8 +40,8 @@ namespace Colony_Management_System.Models
         [ForeignKey("AdresId")]
         public Adres Adres { get; set; }
 
-        public ICollection<DzieckoRodzic> DzieckoRodzice { get; set; }
-        public ICollection<KoloniaDziecko> KoloniaDzieci { get; set; }
-        public ICollection<Obserwacja> Obserwacje { get; set; }
+        public ICollection<DzieckoRodzic> DzieckoRodzic { get; set; }
+        public ICollection<KoloniaDziecko> KoloniaDziecko { get; set; }
+        public ICollection<Obserwacja> Obserwacja { get; set; }
     }
 }

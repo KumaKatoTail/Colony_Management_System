@@ -53,11 +53,11 @@ namespace Colony_Management_System.Models
         [ForeignKey("FormaId")]
         public Forma Forma { get; set; }
 
-        public ICollection<Grupa> Grupy { get; set; }
+        public ICollection<Grupa> Grupa { get; set; }
 
         public Kolonia()
         {
-            Grupy = new HashSet<Grupa>();
+            Grupa = new HashSet<Grupa>();
         }
     }
 }

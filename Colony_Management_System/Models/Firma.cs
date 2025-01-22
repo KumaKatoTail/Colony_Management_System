@@ -23,7 +23,7 @@ namespace Colony_Management_System.Models
         [ForeignKey("AdresId")]
         public Adres Adres { get; set; }
 
-        public ICollection<Kolonia> Kolonie { get; set; }
-        public ICollection<Administrator> Administratorzy { get; set; }
+        public ICollection<Kolonia> Kolonia { get; set; }
+        public ICollection<Administrator> Administrator { get; set; }
     }
 }

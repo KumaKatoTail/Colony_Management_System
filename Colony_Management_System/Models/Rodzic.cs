@@ -46,6 +46,6 @@ namespace Colony_Management_System.Models
         [ForeignKey("AdresId")]
         public Adres Adres { get; set; }
 
-        public ICollection<DzieckoRodzic> Dzieci { get; set; }
+        public ICollection<DzieckoRodzic> DzieckoRodzic { get; set; }
     }
 }
