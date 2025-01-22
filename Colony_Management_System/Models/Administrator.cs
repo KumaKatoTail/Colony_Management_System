@@ -1,4 +1,5 @@
-﻿using static System.Net.Mime.MediaTypeNames;
+﻿using Colony_Management_System.Models.Colony_Management_System.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Colony_Management_System.Models
 {
