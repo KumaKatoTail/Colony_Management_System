@@ -1,23 +1,63 @@
-﻿namespace Colony_Management_System.Models
-{
-    namespace Colony_Management_System.Models
-    {
-        public class Kolonia
-        {
-            public int Id { get; set; }
-            public int FirmaId { get; set; }
-            public int AdresId { get; set; }
-            public int FormaId { get; set; }
-            public DateTime TerminOd { get; set; }
-            public DateTime TerminDo { get; set; }
-            public string TrasaWedrowna { get; set; }
-            public string Kraj { get; set; }
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
-            public Firma Firma { get; set; }
-            public Adres Adres { get; set; }
-            public Forma Forma { get; set; }
-            public ICollection<Grupa> Grupy { get; set; }
+namespace Colony_Management_System.Models
+{
+    [Table("Kolonia")]
+    public class Kolonia
+    {
+        [Key]
+        [Column("id")]
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        [Column("firmaId")]
+        [JsonProperty("firmaId")]
+        public int FirmaId { get; set; }
+
+        [Column("adresId")]
+        [JsonProperty("adresId")]
+        public int AdresId { get; set; }
+
+        [Column("formaId")]
+        [JsonProperty("formaId")]
+        public int FormaId { get; set; }
+
+        [Column("terminOd")]
+        [JsonProperty("terminOd")]
+        public DateTime TerminOd { get; set; }
+
+        [Column("terminDo")]
+        [JsonProperty("terminDo")]
+        public DateTime TerminDo { get; set; }
+
+        [Column("trasaWedrowna")]
+        [JsonProperty("trasaWedrowna")]
+        public string? TrasaWedrowna { get; set; }
+
+        [Column("kraj")]
+        [JsonProperty("kraj")]
+        [StringLength(32)]
+        public string? Kraj { get; set; }
+
+        // Relacje
+        [ForeignKey("FirmaId")]
+        public Firma Firma { get; set; }
+
+        [ForeignKey("AdresId")]
+        public Adres Adres { get; set; }
+
+        [ForeignKey("FormaId")]
+        public Forma Forma { get; set; }
+
+        public ICollection<Grupa> Grupy { get; set; }
+
+        public Kolonia()
+        {
+            Grupy = new HashSet<Grupa>();
         }
     }
-
 }
