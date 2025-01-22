@@ -4,6 +4,30 @@ using Microsoft.EntityFrameworkCore;
 
 public class KoloniaDbContext : DbContext
 {
+
+    readonly string connectionString;
+
+
+    public KoloniaDbContext()
+    {
+    }
+    //------------------------------------------------------------------------------------------------
+
+#pragma warning disable CS8618
+    public KoloniaDbContext(DbContextOptions options)
+         : base(options)
+#pragma warning restore CS8618
+    {
+    }
+    //------------------------------------------------------------------------------------------------
+
+#pragma warning disable CS8618
+    public KoloniaDbContext(string connectionString)
+#pragma warning restore CS8618
+    {
+        this.connectionString = connectionString;
+    }
+
     public DbSet<Administrator> Administrator { get; set; }
     public DbSet<Adres> Adres { get; set; }
     public DbSet<Dziecko> Dziecko { get; set; }

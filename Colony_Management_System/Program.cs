@@ -1,27 +1,118 @@
+using Colony_Management_System.Services;
+using Colony_Management_System.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 var builder = WebApplication.CreateBuilder(args);
+System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(); // Dodajemy obs³ugê MVC
+
+// Dodajemy us³ugi wymagane do autentykacji i autoryzacji JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "ColonyManagementSystem",
+            ValidAudience = "ColonyManagementSystemAPI",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("xLvOEFU2wtLi5tirZm7e6kGWC8txB3RhHF6JmeUJiBQ="))
+        };
+    });
+
+//// Konfiguracja CORS
+//var isCors = "_Cors";
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: isCors,
+//                      policy =>
+//                      {
+//                          policy.WithOrigins("http://your-allowed-origin.com") // Okreœl dozwolone domeny
+//                                .WithHeaders("Authorization", "Content-Type")
+//                                .WithMethods("GET", "POST", "PUT", "DELETE");
+//                      });
+//});
+
+// Dodajemy Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Colony Management API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+
+// Rejestracja serwisów
+builder.Services.AddTransient<IAccountRepository, AccountRepository>(); // Rejestracja repozytorium kont
+builder.Services.AddTransient<IUserAuthService, UserAuthService>(); // Rejestracja serwisu autoryzacji u¿ytkownika
+
+builder.Services.AddDbContext<KoloniaDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Rejestracja innych serwisów, które mog¹ byæ potrzebne
+builder.Services.AddHttpContextAccessor(); // Jeœli u¿ywasz HttpContext w innych serwisach
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+#if DEBUG
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+    try
+    {
+        List<string> url = File.ReadLines(Environment.CurrentDirectory + "/swagger.config").ToList();
+        c.SwaggerEndpoint(url[0], "Colony Management API");
+    }
+    catch
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Colony Management API v1");
+    }
+    c.RoutePrefix = "swagger";
+    c.ConfigObject.PersistAuthorization = true;
+});
+#endif
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
+// Konfiguracja autentykacji i autoryzacji
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+// U¿ywanie CORS
+//app.UseCors(isCors);
+
+// Mapowanie kontrolerów
+app.MapControllers();
 
 app.Run();
