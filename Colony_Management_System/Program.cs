@@ -8,12 +8,14 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Colony_Management_System.Models.DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
+var connectionString = "Server=sql7.freesqldatabase.com;Database=your_database_name;User=your_username;Password=your_password;Port=3306;";
+var context = new KoloniaDbContext(connectionString);
 // Add services to the container.
-builder.Services.AddControllersWithViews(); // Dodajemy obs³ugê MVC
+builder.Services.AddControllersWithViews(); // Obs³uguje MVC (kontrolery + widoki)
 
 // Dodajemy us³ugi wymagane do autentykacji i autoryzacji JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -64,11 +66,11 @@ builder.Services.AddSwaggerGen(option =>
 
 // Rejestracja serwisów
 builder.Services.AddTransient<IAccountRepository, AccountRepository>(); // Rejestracja repozytorium kont
-builder.Services.AddTransient<IUserAuthService, UserAuthService>(); // Rejestracja serwisu autoryzacji u¿ytkownika
+builder.Services.AddTransient<IUserService, UserService>(); // Rejestracja serwisu autoryzacji u¿ytkownika
 
 // Zaktualizowana konfiguracja DbContext do MySQL
 builder.Services.AddDbContext<KoloniaDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+    options.UseMySql(builder.Configuration.GetConnectionString("Server=sql7.freesqldatabase.com;Database=your_database_name;User=your_username;Password=your_password;Port=3306;"),
     new MySqlServerVersion(new Version(5, 5, 62))));  // U¿ywamy wersji MySQL 5.5.62
 
 // Rejestracja innych serwisów, które mog¹ byæ potrzebne

@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Colony_Management_System.Services;
+﻿using Colony_Management_System.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
 namespace Colony_Management_System.Controllers
@@ -8,45 +9,46 @@ namespace Colony_Management_System.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserAuthService _userAuthService;
+        private readonly IUserService _userService;
 
-        public AuthController(IUserAuthService userAuthService)
+        public AuthController(IUserService userService)
         {
-            _userAuthService = userAuthService;
+            _userService = userService;
         }
 
-        // POST: api/auth/login
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest model)
+        // Endpoint do logowania użytkownika
+        [HttpPost("Login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Authenticate([FromBody] LoginViewModel model)
         {
-            if (model == null || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            if (model == null || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Haslo))
             {
                 return BadRequest("Email and password are required.");
             }
 
-            try
-            {
-                // Wywołanie logowania
-                var token = await _userAuthService.LoginAsync(model.Email, model.Password);
+            var result = await _userService.Authenticate(model.Email, model.Haslo);
 
-                // Zwrócenie tokenu JWT
-                return Ok(new { Token = token });
-            }
-            catch (UnauthorizedAccessException)
+            if (!result.Success)
             {
-                return Unauthorized("Invalid credentials.");
+                return Unauthorized(result.ErrorMessage);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Ok(new { Token = result.Token });
+        }
+
+        // Endpoint do weryfikacji tokenu
+        [HttpPost("CheckToken")]
+        [Authorize]
+        public IActionResult CheckToken()
+        {
+            return Ok(new { Message = "Token is valid." });
         }
     }
 
-    // Klasa modelu dla żądania logowania
-    public class LoginRequest
+    // Model do logowania
+    public class LoginViewModel
     {
         public string Email { get; set; }
-        public string Password { get; set; }
+        public string Haslo { get; set; }
     }
 }
