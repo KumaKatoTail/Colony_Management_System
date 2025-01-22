@@ -6,10 +6,13 @@ namespace Colony_Management_System.Models.DbContext
     public class KoloniaDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
         private readonly string _connectionString;
-
+        public KoloniaDbContext(DbContextOptions<KoloniaDbContext> options)
+        : base(options)
+    {
+        }
         public KoloniaDbContext(string connectionString)
         {
-            this._connectionString = connectionString;
+            this._connectionString = connectionString;//"Server=sql7.freesqldatabase.com;Port=3306;Database=sql7759030;Uid=sql7759030;Pwd=wYaz8HFV7h;Charset=utf8;";
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
