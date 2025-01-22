@@ -8,7 +8,6 @@ namespace Colony_Management_System.Models
         public int KontoId { get; set; }
         public int FirmaId { get; set; }
 
-        // Navigation properties
         public Konto Konto { get; set; }
         public Firma Firma { get; set; }
     }
