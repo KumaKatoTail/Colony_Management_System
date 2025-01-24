@@ -39,7 +39,7 @@ namespace Colony_Management_System.Controllers
             // Wyszukiwanie użytkownika w bazie danych
             var konto = await _context.Konto.FirstOrDefaultAsync(k => k.Email == model.Email);
 
-            if (konto == null || konto.Haslo != model.Haslo) // Dodaj hashowanie hasła w przyszłości
+            if (konto == null || konto.Haslo != model.Haslo) // Bez haszowania hasła
             {
                 return Unauthorized("Invalid email or password.");
             }
@@ -68,7 +68,7 @@ namespace Colony_Management_System.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, konto.Email),
-                new Claim(ClaimTypes.Role, konto.UprId.ToString()),
+                new Claim(ClaimTypes.Role, konto.UprId.ToString()), // Przypisanie roli użytkownika
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

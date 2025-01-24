@@ -13,12 +13,7 @@ using Colony_Management_System.Models.DbContext;
 var builder = WebApplication.CreateBuilder(args);
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-// Rejestracja DbContext z po³¹czeniem do bazy danych
-//builder.Services.AddDbContext<KoloniaDbContext>(options =>
-//{
-//    var connectionString = builder.Configuration.GetConnectionString("Server=sql7.freesqldatabase.com;Port=3306;Database=sql7759030;Uid=sql7759030;Pwd=wYaz8HFV7h;Charset=utf8;");
-//    options.UseMySql(connectionString, new MySqlServerVersion(new Version(5, 5, 62)));
-//});
+
 builder.Services.AddDbContext<KoloniaDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
