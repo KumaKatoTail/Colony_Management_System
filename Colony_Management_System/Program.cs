@@ -93,7 +93,7 @@ app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Colony Management API v1");
     }
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = string.Empty; // Swagger UI jako strona domyœlna
     c.ConfigObject.PersistAuthorization = true;
 });
 #endif
