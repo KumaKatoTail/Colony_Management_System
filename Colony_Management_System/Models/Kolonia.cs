@@ -40,11 +40,11 @@ namespace Colony_Management_System.Models
 
         [Column("trasaWedrowna")]
         [JsonProperty("trasaWedrowna")]
-        public string TrasaWedrowna { get; set; }
+        public string? TrasaWedrowna { get; set; }
 
         [Column("kraj")]
         [JsonProperty("kraj")]
-        public string Kraj { get; set; }
+        public string? Kraj { get; set; }
 
         [ForeignKey(nameof(FirmaId))]
         [JsonProperty("firma")]

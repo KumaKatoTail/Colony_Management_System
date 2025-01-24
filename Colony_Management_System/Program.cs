@@ -9,10 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Colony_Management_System.Models.DbContext;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
 
 builder.Services.AddDbContext<KoloniaDbContext>(options =>
     options.UseMySql(
@@ -20,6 +20,7 @@ builder.Services.AddDbContext<KoloniaDbContext>(options =>
         new MySqlServerVersion(new Version(8, 3, 0)) // Wersja MySQL
     )
 );
+
 // Dodaj us³ugi do kontenera
 builder.Services.AddControllersWithViews(); // Obs³uguje MVC (kontrolery + widoki)
 
@@ -35,7 +36,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = "ColonyManagementSystem",
             ValidAudience = "ColonyManagementSystemAPI",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("xLvOEFU2wtLi5tirZm7e6kGWC8txB3RhHF6JmeUJiBQ="))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperLongSecretKeyThatIsAtLeast32BytesLong12345")) // Klucz podpisu JWT
         };
     });
 
@@ -68,13 +69,16 @@ builder.Services.AddSwaggerGen(option =>
             new string[]{}
         }
     });
+
+    // Dodaj konfiguracjê dla Swagger UI OAuth2Redirect
+    option.OperationFilter<SwaggerJwtOperationFilter>();
 });
 
 // Rejestracja serwisów
 builder.Services.AddTransient<IAccountRepository, AccountRepository>(); // Rejestracja repozytorium kont
 builder.Services.AddTransient<IUserService, UserService>(); // Rejestracja serwisu autoryzacji u¿ytkownika
-
-// Rejestracja innych serwisów, które mog¹ byæ potrzebne
+builder.Services.AddTransient<IKoloniaService, KoloniaService>();
+builder.Services.AddTransient<IKoloniaRepository, KoloniaRepository>();
 builder.Services.AddHttpContextAccessor(); // Jeœli u¿ywasz HttpContext w innych serwisach
 
 var app = builder.Build();
@@ -84,17 +88,12 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    try
-    {
-        List<string> url = File.ReadLines(Environment.CurrentDirectory + "/swagger.config").ToList();
-        c.SwaggerEndpoint(url[0], "Colony Management API");
-    }
-    catch
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Colony Management API v1");
-    }
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Colony Management API v1");
     c.RoutePrefix = string.Empty; // Swagger UI jako strona domyœlna
     c.ConfigObject.PersistAuthorization = true;
+
+    // Wstrzykniêcie niestandardowego skryptu JavaScript
+    c.InjectJavascript("swagger-ui/custom-swagger.js");
 });
 #endif
 
@@ -106,3 +105,18 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Klasa operacji Swaggera dla automatycznego logowania
+public class SwaggerJwtOperationFilter : IOperationFilter
+{
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    {
+        if (operation.OperationId == "Authenticate") // Nazwa metody logowania
+        {
+            operation.Responses.Add("200", new OpenApiResponse
+            {
+                Description = "Token retrieved and applied to Swagger UI"
+            });
+        }
+    }
+}

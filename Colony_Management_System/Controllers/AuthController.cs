@@ -47,8 +47,12 @@ namespace Colony_Management_System.Controllers
             // Generowanie tokenu JWT
             var token = GenerateJwtToken(konto);
 
+            // Dodanie tokenu do nagłówka odpowiedzi
+            HttpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return Ok(new { Token = token });
         }
+
 
         // Endpoint do weryfikacji tokenu
         [HttpPost("CheckToken")]
@@ -67,10 +71,10 @@ namespace Colony_Management_System.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, konto.Email),
-                new Claim(ClaimTypes.Role, konto.UprId.ToString()), // Przypisanie roli użytkownika
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+        new Claim(ClaimTypes.Name, konto.Email),
+        new Claim("UprId", konto.UprId.ToString()), // Przypisanie UprId użytkownika zamiast roli
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -85,12 +89,13 @@ namespace Colony_Management_System.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-    }
 
-    // ViewModel do logowania
-    public class KontoLoginViewModel
-    {
-        public string Email { get; set; }
-        public string Haslo { get; set; }
+
+        // ViewModel do logowania
+        public class KontoLoginViewModel
+        {
+            public string Email { get; set; }
+            public string Haslo { get; set; }
+        }
     }
 }
