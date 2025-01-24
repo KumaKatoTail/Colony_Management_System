@@ -36,142 +36,142 @@ namespace Colony_Management_System.Models.DbContext
             modelBuilder.Entity<Administrator>()
                 .HasOne(a => a.Konto)
                 .WithMany()
-                .HasForeignKey(a => a.KontoId);
+                .HasForeignKey(a => a.KontoId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Administrator>()
                 .HasOne(a => a.Firma)
                 .WithMany()
-                .HasForeignKey(a => a.FirmaId);
+                .HasForeignKey(a => a.FirmaId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Adres>()
                 .HasOne(a => a.Ulica)
                 .WithMany()
-                .HasForeignKey(a => a.UlicaId);
+                .HasForeignKey(a => a.UlicaId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Dziecko>()
                 .HasOne(d => d.Adres)
                 .WithMany()
-                .HasForeignKey(d => d.AdresId);
+                .HasForeignKey(d => d.AdresId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<DzieckoRodzic>()
                 .HasOne(dr => dr.Dziecko)
                 .WithMany()
-                .HasForeignKey(dr => dr.DzieckoId);
+                .HasForeignKey(dr => dr.DzieckoId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<DzieckoRodzic>()
                 .HasOne(dr => dr.Rodzic)
                 .WithMany()
-                .HasForeignKey(dr => dr.RodzicId);
+                .HasForeignKey(dr => dr.RodzicId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Firma>()
                 .HasOne(f => f.Adres)
                 .WithMany()
-                .HasForeignKey(f => f.AdresId);
+                .HasForeignKey(f => f.AdresId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Grupa>()
                 .HasOne(g => g.Kolonia)
                 .WithMany()
-                .HasForeignKey(g => g.KoloniaId);
+                .HasForeignKey(g => g.KoloniaId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<KoloniaDziecko>()
                 .HasOne(kd => kd.Dziecko)
                 .WithMany()
-                .HasForeignKey(kd => kd.DzieckoId);
+                .HasForeignKey(kd => kd.DzieckoId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<KoloniaDziecko>()
                 .HasOne(kd => kd.Grupa)
                 .WithMany()
-                .HasForeignKey(kd => kd.GrupaId);
+                .HasForeignKey(kd => kd.GrupaId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<KoloniaDziecko>()
                 .HasOne(kd => kd.Status)
                 .WithMany()
-                .HasForeignKey(kd => kd.StatusId);
+                .HasForeignKey(kd => kd.StatusId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Kolonia>()
                 .HasOne(k => k.Firma)
                 .WithMany()
-                .HasForeignKey(k => k.FirmaId);
+                .HasForeignKey(k => k.FirmaId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Kolonia>()
                 .HasOne(k => k.Adres)
                 .WithMany()
-                .HasForeignKey(k => k.AdresId);
+                .HasForeignKey(k => k.AdresId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Kolonia>()
                 .HasOne(k => k.Forma)
                 .WithMany()
-                .HasForeignKey(k => k.FormaId);
+                .HasForeignKey(k => k.FormaId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Konto>()
                 .HasOne(k => k.Upr)
                 .WithMany()
-                .HasForeignKey(k => k.UprId);
+                .HasForeignKey(k => k.UprId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Obserwacja>()
                 .HasOne(o => o.Dziecko)
                 .WithMany()
-                .HasForeignKey(o => o.IdzieckoId);
+                .HasForeignKey(o => o.IdzieckoId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Obserwacja>()
                 .HasOne(o => o.RodzObs)
                 .WithMany()
-                .HasForeignKey(o => o.IrodzId);
+                .HasForeignKey(o => o.IrodzId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<OpiekunGrupa>()
                 .HasOne(og => og.Grupa)
                 .WithMany()
-                .HasForeignKey(og => og.GrupaId);
+                .HasForeignKey(og => og.GrupaId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<OpiekunGrupa>()
                 .HasOne(og => og.Opiekun)
                 .WithMany()
-                .HasForeignKey(og => og.OpiekunId);
+                .HasForeignKey(og => og.OpiekunId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Opiekun>()
                 .HasOne(o => o.Konto)
                 .WithMany()
-                .HasForeignKey(o => o.KontoId);
+                .HasForeignKey(o => o.KontoId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Platnosc>()
                 .HasOne(p => p.KoloniaDziecko)
                 .WithMany()
-                .HasForeignKey(p => p.KoloniaDieckoId);
+                .HasForeignKey(p => p.KoloniaDieckoId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Platnosc>()
                 .HasOne(p => p.Rodzic)
                 .WithMany()
-                .HasForeignKey(p => p.RodzicId);
+                .HasForeignKey(p => p.RodzicId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Platnosc>()
                 .HasOne(p => p.RodzajPlatnosci)
                 .WithMany()
-                .HasForeignKey(p => p.RodzajPlatnosciId);
+                .HasForeignKey(p => p.RodzajPlatnosciId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Platnosc>()
                 .HasOne(p => p.StatusPlatnosci)
                 .WithMany()
-                .HasForeignKey(p => p.StatusId);
+                .HasForeignKey(p => p.StatusId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Platnosc>()
                 .HasOne(p => p.Waluta)
                 .WithMany()
-                .HasForeignKey(p => p.WalutaId);
+                .HasForeignKey(p => p.WalutaId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Rodzic>()
                 .HasOne(r => r.Adres)
                 .WithMany()
-                .HasForeignKey(r => r.AdresId);
+                .HasForeignKey(r => r.AdresId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Rodzic>()
                 .HasOne(r => r.Konto)
                 .WithMany()
-                .HasForeignKey(r => r.KontoId);
+                .HasForeignKey(r => r.KontoId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Ulica>()
                 .HasOne(u => u.Miasto)
                 .WithMany()
-                .HasForeignKey(u => u.MiastoId);
+                .HasForeignKey(u => u.MiastoId).OnDelete(DeleteBehavior.Cascade);
 
             // Dodatkowe konfiguracje, jeśli są wymagane
         }

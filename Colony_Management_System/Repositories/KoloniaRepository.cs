@@ -1,16 +1,17 @@
 ﻿using Colony_Management_System.Models;
 using Colony_Management_System.Models.DbContext;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 
 namespace Colony_Management_System.Repositories
 {
     public interface IKoloniaRepository
     {
-        Task<Kolonia> AddKoloniaAsync(Kolonia kolonia);
-        Task<Kolonia> UpdateKoloniaAsync(int id, Kolonia kolonia);
+        Task<Kolonia?> AddKoloniaAsync(Kolonia kolonia);
+        Task<Kolonia?> UpdateKoloniaAsync(int id, Kolonia kolonia);
         Task<bool> DeleteKoloniaAsync(int id);
-        Task<Kolonia> GetKoloniaByIdAsync(int id);
+        Task<Kolonia?> GetKoloniaByIdAsync(int id);
     }
 
     public class KoloniaRepository : IKoloniaRepository
@@ -22,49 +23,83 @@ namespace Colony_Management_System.Repositories
             _context = context;
         }
 
-        public async Task<Kolonia> GetKoloniaByIdAsync(int id)
+        public async Task<Kolonia?> GetKoloniaByIdAsync(int id)
         {
-            return await _context.Kolonia
-                .Include(k => k.Firma)
-                .Include(k => k.Adres)
-                .Include(k => k.Forma)
-                .FirstOrDefaultAsync(k => k.Id == id);
-        }
-
-        public async Task<Kolonia> AddKoloniaAsync(Kolonia kolonia)
-        {
-            _context.Kolonia.Add(kolonia);
-            await _context.SaveChangesAsync();
-            return kolonia;
-        }
-
-        public async Task<Kolonia> UpdateKoloniaAsync(int id, Kolonia kolonia)
-        {
-            var existingKolonia = await _context.Kolonia.FindAsync(id);
-            if (existingKolonia == null)
+            try
+            {
+                return await _context.Kolonia
+                    .Include(k => k.Firma)
+                    .Include(k => k.Adres)
+                    .Include(k => k.Forma)
+                    .FirstOrDefaultAsync(k => k.Id == id);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here if necessary
                 return null;
+            }
+        }
 
-            existingKolonia.FirmaId = kolonia.FirmaId;
-            existingKolonia.AdresId = kolonia.AdresId;
-            existingKolonia.FormaId = kolonia.FormaId;
-            existingKolonia.TerminOd = kolonia.TerminOd;
-            existingKolonia.TerminDo = kolonia.TerminDo;
-            existingKolonia.TrasaWedrowna = kolonia.TrasaWedrowna;
-            existingKolonia.Kraj = kolonia.Kraj;
+        public async Task<Kolonia?> AddKoloniaAsync(Kolonia kolonia)
+        {
+            try
+            {
+                _context.Kolonia.Add(kolonia);
+                await _context.SaveChangesAsync();
+                return kolonia;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here if necessary
+                return null;
+            }
+        }
 
-            await _context.SaveChangesAsync();
-            return existingKolonia;
+        public async Task<Kolonia?> UpdateKoloniaAsync(int id, Kolonia kolonia)
+        {
+            try
+            {
+                var existingKolonia = await _context.Kolonia.FindAsync(id);
+                if (existingKolonia == null)
+                    return null;
+
+                existingKolonia.FirmaId = kolonia.FirmaId;
+                existingKolonia.AdresId = kolonia.AdresId;
+                existingKolonia.FormaId = kolonia.FormaId;
+                existingKolonia.TerminOd = kolonia.TerminOd;
+                existingKolonia.TerminDo = kolonia.TerminDo;
+                existingKolonia.TrasaWedrowna = kolonia.TrasaWedrowna;
+                existingKolonia.Kraj = kolonia.Kraj;
+                existingKolonia.Nazwa = kolonia.Nazwa;
+                existingKolonia.Opis = kolonia.Opis;
+
+                await _context.SaveChangesAsync();
+                return existingKolonia;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here if necessary
+                return null;
+            }
         }
 
         public async Task<bool> DeleteKoloniaAsync(int id)
         {
-            var kolonia = await _context.Kolonia.FindAsync(id);
-            if (kolonia == null)
-                return false;
+            try
+            {
+                var kolonia = await _context.Kolonia.FindAsync(id);
+                if (kolonia == null)
+                    return false;
 
-            _context.Kolonia.Remove(kolonia);
-            await _context.SaveChangesAsync();
-            return true;
+                _context.Kolonia.Remove(kolonia);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here if necessary
+                return false;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using Colony_Management_System.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Colony_Management_System.Controllers
@@ -22,10 +23,16 @@ namespace Colony_Management_System.Controllers
         [Authorize]
         public async Task<IActionResult> AddKolonia([FromBody] Kolonia kolonia)
         {
-            var uprId = int.Parse(User.FindFirst("UprId")?.Value ?? "0"); // Pobranie UprId z tokena
+            if (kolonia == null)
+                return BadRequest("Kolonia data is required.");
+
+            var uprId = GetUprIdFromToken();
+            if (uprId == null)
+                return Unauthorized("Invalid token.");
+
             try
             {
-                var result = await _koloniaService.AddKoloniaAsync(kolonia, uprId);
+                var result = await _koloniaService.AddKoloniaAsync(kolonia, uprId.Value);
                 return CreatedAtAction(nameof(GetKolonia), new { id = result.Id }, result);
             }
             catch (UnauthorizedAccessException)
@@ -39,10 +46,16 @@ namespace Colony_Management_System.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateKolonia(int id, [FromBody] Kolonia kolonia)
         {
-            var uprId = int.Parse(User.FindFirst("UprId")?.Value ?? "0"); // Pobranie UprId z tokena
+            if (kolonia == null)
+                return BadRequest("Kolonia data is required.");
+
+            var uprId = GetUprIdFromToken();
+            if (uprId == null)
+                return Unauthorized("Invalid token.");
+
             try
             {
-                var result = await _koloniaService.UpdateKoloniaAsync(id, kolonia, uprId);
+                var result = await _koloniaService.UpdateKoloniaAsync(id, kolonia, uprId.Value);
                 if (result == null)
                     return NotFound("Kolonia not found.");
                 return Ok(result);
@@ -58,10 +71,13 @@ namespace Colony_Management_System.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteKolonia(int id)
         {
-            var uprId = int.Parse(User.FindFirst("UprId")?.Value ?? "0"); // Pobranie UprId z tokena
+            var uprId = GetUprIdFromToken();
+            if (uprId == null)
+                return Unauthorized("Invalid token.");
+
             try
             {
-                var success = await _koloniaService.DeleteKoloniaAsync(id, uprId);
+                var success = await _koloniaService.DeleteKoloniaAsync(id, uprId.Value);
                 if (!success)
                     return NotFound("Kolonia not found.");
                 return NoContent();
@@ -81,6 +97,15 @@ namespace Colony_Management_System.Controllers
             if (kolonia == null)
                 return NotFound("Kolonia not found.");
             return Ok(kolonia);
+        }
+
+        // Helper method to get UprId from token
+        private int? GetUprIdFromToken()
+        {
+            var uprIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(uprIdClaim, out var uprId))
+                return uprId;
+            return null;
         }
     }
 }

@@ -72,7 +72,7 @@ namespace Colony_Management_System.Controllers
             var claims = new[]
             {
         new Claim(ClaimTypes.Name, konto.Email),
-        new Claim("UprId", konto.UprId.ToString()), // Przypisanie UprId użytkownika zamiast roli
+        new Claim("UprId", konto.UprId.ToString()), 
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
 

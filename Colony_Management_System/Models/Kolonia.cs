@@ -38,24 +38,35 @@ namespace Colony_Management_System.Models
         [JsonProperty("terminDo")]
         public DateTime TerminDo { get; set; }
 
+        [Required]
+        [MaxLength(255)]
+        [Column("nazwa")]
+        [JsonProperty("nazwa")]
+        public string Nazwa { get; set; } = string.Empty;
+
         [Column("trasaWedrowna")]
         [JsonProperty("trasaWedrowna")]
         public string? TrasaWedrowna { get; set; }
 
+        [Column("opis")]
+        [JsonProperty("opis")]
+        public string? Opis { get; set; }
+
+        [MaxLength(32)]
         [Column("kraj")]
         [JsonProperty("kraj")]
         public string? Kraj { get; set; }
 
         [ForeignKey(nameof(FirmaId))]
         [JsonProperty("firma")]
-        public virtual Firma Firma { get; set; }
+        public virtual Firma Firma { get; set; } = null!;
 
         [ForeignKey(nameof(AdresId))]
         [JsonProperty("adres")]
-        public virtual Adres Adres { get; set; }
+        public virtual Adres Adres { get; set; } = null!;
 
         [ForeignKey(nameof(FormaId))]
         [JsonProperty("forma")]
-        public virtual Forma Forma { get; set; }
+        public virtual Forma Forma { get; set; } = null!;
     }
 }
