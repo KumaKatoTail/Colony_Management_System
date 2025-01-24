@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -15,9 +15,6 @@ namespace Colony_Management_System.Models
 
         [Column("status")]
         [JsonProperty("status")]
-        [StringLength(100)]
-        public string Nazwa { get; set; }
-
-        public ICollection<Platnosc> Platnosc { get; set; }
+        public string Status { get; set; }
     }
 }

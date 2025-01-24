@@ -12,28 +12,23 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [ForeignKey("kontoId")]
         [Column("kontoId")]
         [JsonProperty("kontoId")]
         public int KontoId { get; set; }
 
         [Column("telefon")]
         [JsonProperty("telefon")]
-        [StringLength(12)]
         public string Telefon { get; set; }
 
         [Column("imie")]
         [JsonProperty("imie")]
-        [StringLength(32)]
         public string Imie { get; set; }
 
         [Column("nazwisko")]
         [JsonProperty("nazwisko")]
-        [StringLength(32)]
         public string Nazwisko { get; set; }
 
-        [ForeignKey("KontoId")]
-        public Konto Konto { get; set; }
-
-        public ICollection<OpiekunGrupa> OpiekunGrupa { get; set; }
+        public virtual Konto Konto { get; set; }
     }
 }

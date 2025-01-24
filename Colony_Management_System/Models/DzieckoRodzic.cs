@@ -12,18 +12,22 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("dzieckoId")]
         [JsonProperty("dzieckoId")]
         public int DzieckoId { get; set; }
 
+        [Required]
         [Column("rodzicId")]
         [JsonProperty("rodzicId")]
         public int RodzicId { get; set; }
 
-        [ForeignKey("DzieckoId")]
-        public Dziecko Dziecko { get; set; }
+        [ForeignKey(nameof(DzieckoId))]
+        [JsonProperty("dziecko")]
+        public virtual Dziecko Dziecko { get; set; }
 
-        [ForeignKey("RodzicId")]
-        public Rodzic Rodzic { get; set; }
+        [ForeignKey(nameof(RodzicId))]
+        [JsonProperty("rodzic")]
+        public virtual Rodzic Rodzic { get; set; }
     }
 }

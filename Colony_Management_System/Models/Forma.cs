@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
@@ -13,11 +12,10 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [Required]
+        [MaxLength(20)]
         [Column("forma")]
         [JsonProperty("forma")]
-        [StringLength(20)]
-        public string Nazwa { get; set; }
-
-        public ICollection<Kolonia> Kolonia { get; set; }
+        public string RodzajWypoczynku { get; set; }
     }
 }

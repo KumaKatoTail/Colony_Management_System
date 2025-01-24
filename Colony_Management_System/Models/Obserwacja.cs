@@ -12,22 +12,21 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [ForeignKey("irodzId")]
         [Column("irodzId")]
         [JsonProperty("irodzId")]
-        public int RodzajObserwacjiId { get; set; }
+        public int IrodzId { get; set; }
 
+        [ForeignKey("idzieckoId")]
         [Column("idzieckoId")]
         [JsonProperty("idzieckoId")]
-        public int DzieckoId { get; set; }
+        public int IdzieckoId { get; set; }
 
         [Column("opis")]
         [JsonProperty("opis")]
         public string Opis { get; set; }
 
-        [ForeignKey("RodzajObserwacjiId")]
-        public RodzajObserwacji RodzajObserwacji { get; set; }
-
-        [ForeignKey("DzieckoId")]
-        public Dziecko Dziecko { get; set; }
+        public virtual Dziecko Dziecko { get; set; }
+        public virtual RodzObs RodzObs { get; set; }
     }
 }

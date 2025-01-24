@@ -12,23 +12,22 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("ulicaId")]
         [JsonProperty("ulicaId")]
         public int UlicaId { get; set; }
 
+        [Required]
         [Column("nr_domu")]
-        [JsonProperty("nrDomu")]
+        [JsonProperty("nr_domu")]
         public int NrDomu { get; set; }
 
         [Column("nr_miesz")]
-        [JsonProperty("nrMieszkania")]
-        public int? NrMieszkania { get; set; }
+        [JsonProperty("nr_miesz")]
+        public int? NrMiesz { get; set; }
 
-        [ForeignKey("UlicaId")]
-        public Ulica Ulica { get; set; }
-
-        public ICollection<Dziecko> Dziecko { get; set; }
-        public ICollection<Rodzic> Rodzic { get; set; }
-        public ICollection<Firma> Firma { get; set; }
+        [ForeignKey(nameof(UlicaId))]
+        [JsonProperty("ulica")]
+        public virtual Ulica Ulica { get; set; }
     }
 }

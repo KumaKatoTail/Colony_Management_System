@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
@@ -12,9 +13,10 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [ForeignKey("koloniaDieckoId")]
         [Column("koloniaDieckoId")]
         [JsonProperty("koloniaDieckoId")]
-        public int KoloniaDzieckoId { get; set; }
+        public int KoloniaDieckoId { get; set; }
 
         [Column("czyFaktura")]
         [JsonProperty("czyFaktura")]
@@ -34,7 +36,6 @@ namespace Colony_Management_System.Models
 
         [Column("numerRef")]
         [JsonProperty("numerRef")]
-        [StringLength(255)]
         public string NumerRef { get; set; }
 
         [Column("idTranzakcja")]
@@ -43,42 +44,36 @@ namespace Colony_Management_System.Models
 
         [Column("bramka")]
         [JsonProperty("bramka")]
-        [StringLength(255)]
         public string Bramka { get; set; }
 
         [Column("oplataPosr")]
         [JsonProperty("oplataPosr")]
         public double OplataPosr { get; set; }
 
+        [ForeignKey("Rodzic_id")]
         [Column("Rodzic_id")]
         [JsonProperty("Rodzic_id")]
         public int RodzicId { get; set; }
 
+        [ForeignKey("waluta_id")]
         [Column("waluta_id")]
         [JsonProperty("waluta_id")]
         public int WalutaId { get; set; }
 
+        [ForeignKey("rodzajPlatnosci_id")]
         [Column("rodzajPlatnosci_id")]
         [JsonProperty("rodzajPlatnosci_id")]
         public int RodzajPlatnosciId { get; set; }
 
+        [ForeignKey("status_id")]
         [Column("status_id")]
         [JsonProperty("status_id")]
         public int StatusId { get; set; }
 
-        [ForeignKey("KoloniaDzieckoId")]
-        public KoloniaDziecko KoloniaDziecko { get; set; }
-
-        [ForeignKey("RodzicId")]
-        public Rodzic Rodzic { get; set; }
-
-        [ForeignKey("RodzajPlatnosciId")]
-        public RodzajPlatnosci RodzajPlatnosci { get; set; }
-
-        [ForeignKey("StatusId")]
-        public StatusPlatnosci StatusPlatnosci { get; set; }
-
-        [ForeignKey("WalutaId")]
-        public Waluta Waluta { get; set; }
+        public virtual KoloniaDziecko KoloniaDziecko { get; set; }
+        public virtual Rodzic Rodzic { get; set; }
+        public virtual RodzajPlatnosci RodzajPlatnosci { get; set; }
+        public virtual StatusPlatnosci StatusPlatnosci { get; set; }
+        public virtual Waluta Waluta { get; set; }
     }
 }

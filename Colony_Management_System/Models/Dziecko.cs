@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -14,34 +13,37 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [Required]
+        [MaxLength(64)]
         [Column("imie")]
         [JsonProperty("imie")]
-        [StringLength(64)]
         public string Imie { get; set; }
 
+        [Required]
+        [MaxLength(64)]
         [Column("nazwisko")]
         [JsonProperty("nazwisko")]
-        [StringLength(64)]
         public string Nazwisko { get; set; }
 
+        [Required]
         [Column("data_ur")]
-        [JsonProperty("dataUrodzenia")]
+        [JsonProperty("data_ur")]
         public DateTime DataUrodzenia { get; set; }
 
+        [Required]
+        [MaxLength(11)]
+        [MinLength(11)]
         [Column("pesel")]
         [JsonProperty("pesel")]
-        [StringLength(11)]
         public string Pesel { get; set; }
 
+        [Required]
         [Column("adresId")]
         [JsonProperty("adresId")]
         public int AdresId { get; set; }
 
-        [ForeignKey("AdresId")]
-        public Adres Adres { get; set; }
-
-        public ICollection<DzieckoRodzic> DzieckoRodzic { get; set; }
-        public ICollection<KoloniaDziecko> KoloniaDziecko { get; set; }
-        public ICollection<Obserwacja> Obserwacja { get; set; }
+        [ForeignKey(nameof(AdresId))]
+        [JsonProperty("adres")]
+        public virtual Adres Adres { get; set; }
     }
 }

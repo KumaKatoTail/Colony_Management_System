@@ -12,18 +12,19 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("adresId")]
         [JsonProperty("adresId")]
         public int AdresId { get; set; }
 
+        [Required]
+        [MaxLength(11)]
         [Column("nazwa")]
         [JsonProperty("nazwa")]
         public string Nazwa { get; set; }
 
-        [ForeignKey("AdresId")]
-        public Adres Adres { get; set; }
-
-        public ICollection<Kolonia> Kolonia { get; set; }
-        public ICollection<Administrator> Administrator { get; set; }
+        [ForeignKey(nameof(AdresId))]
+        [JsonProperty("adres")]
+        public virtual Adres Adres { get; set; }
     }
 }

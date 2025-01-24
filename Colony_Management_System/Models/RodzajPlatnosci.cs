@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace Colony_Management_System.Models
 {
-    [Table("RodzajPlatnosci")]
+    [Table("rodzajPlatnosci")]
     public class RodzajPlatnosci
     {
         [Key]
@@ -12,11 +13,8 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
-        [Column("nazwa")]
-        [JsonProperty("nazwa")]
-        [StringLength(64)]
-        public string Nazwa { get; set; }
-
-        public ICollection<Platnosc> Platnosc { get; set; }
+        [Column("status")]
+        [JsonProperty("status")]
+        public string Status { get; set; }
     }
 }

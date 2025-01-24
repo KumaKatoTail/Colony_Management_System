@@ -5,23 +5,28 @@ namespace Colony_Management_System.Models.DbContext
 {
     public class KoloniaDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
+
         private readonly string _connectionString;
+
         public KoloniaDbContext(DbContextOptions<KoloniaDbContext> options)
-        : base(options)
-    {
+            : base(options)
+        {
         }
+
         public KoloniaDbContext(string connectionString)
         {
-            this._connectionString = connectionString;//"Server=sql7.freesqldatabase.com;Port=3306;Database=sql7759030;Uid=sql7759030;Pwd=wYaz8HFV7h;Charset=utf8;";
+            _connectionString = connectionString;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
-
-            // Używamy Pomelo.EntityFrameworkCore.MySql do połączenia z MySQL
-            optionsBuilder.UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString));
+            if (!string.IsNullOrEmpty(_connectionString))
+            {
+                optionsBuilder.UseMySql(_connectionString, new MySqlServerVersion(new Version(8, 3, 0)));
+            }
         }
+
+     
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -106,12 +111,12 @@ namespace Colony_Management_System.Models.DbContext
             modelBuilder.Entity<Obserwacja>()
                 .HasOne(o => o.Dziecko)
                 .WithMany()
-                .HasForeignKey(o => o.DzieckoId);
+                .HasForeignKey(o => o.IdzieckoId);
 
             modelBuilder.Entity<Obserwacja>()
-                .HasOne(o => o.RodzajObserwacji)
+                .HasOne(o => o.RodzObs)
                 .WithMany()
-                .HasForeignKey(o => o.RodzajObserwacjiId);
+                .HasForeignKey(o => o.IrodzId);
 
             modelBuilder.Entity<OpiekunGrupa>()
                 .HasOne(og => og.Grupa)
@@ -131,7 +136,7 @@ namespace Colony_Management_System.Models.DbContext
             modelBuilder.Entity<Platnosc>()
                 .HasOne(p => p.KoloniaDziecko)
                 .WithMany()
-                .HasForeignKey(p => p.KoloniaDzieckoId);
+                .HasForeignKey(p => p.KoloniaDieckoId);
 
             modelBuilder.Entity<Platnosc>()
                 .HasOne(p => p.Rodzic)
@@ -167,6 +172,8 @@ namespace Colony_Management_System.Models.DbContext
                 .HasOne(u => u.Miasto)
                 .WithMany()
                 .HasForeignKey(u => u.MiastoId);
+
+            // Dodatkowe konfiguracje, jeśli są wymagane
         }
 
         // DbSety dla wszystkich tabel
@@ -188,7 +195,7 @@ namespace Colony_Management_System.Models.DbContext
         public DbSet<Status> Status { get; set; }
         public DbSet<Ulica> Ulica { get; set; }
         public DbSet<Forma> Forma { get; set; }
-        public DbSet<RodzajObserwacji> RodzajObserwacji { get; set; }
+        public DbSet<RodzObs> RodzObs { get; set; }
         public DbSet<RodzajPlatnosci> RodzajPlatnosci { get; set; }
         public DbSet<StatusPlatnosci> StatusPlatnosci { get; set; }
         public DbSet<Upr> Upr { get; set; }

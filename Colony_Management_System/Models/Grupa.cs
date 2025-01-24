@@ -12,27 +12,29 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("koloniaId")]
         [JsonProperty("koloniaId")]
         public int KoloniaId { get; set; }
 
+        [Required]
+        [MaxLength(255)]
         [Column("temat")]
         [JsonProperty("temat")]
-        [StringLength(255)]
         public string Temat { get; set; }
 
+        [Required]
         [Column("opis")]
         [JsonProperty("opis")]
         public string Opis { get; set; }
 
+        [Required]
         [Column("limit")]
         [JsonProperty("limit")]
         public int Limit { get; set; }
 
-        [ForeignKey("KoloniaId")]
-        public Kolonia Kolonia { get; set; }
-
-        public ICollection<KoloniaDziecko> KoloniaDziecko { get; set; }
-        public ICollection<OpiekunGrupa> OpiekunGrupa { get; set; }
+        [ForeignKey(nameof(KoloniaId))]
+        [JsonProperty("kolonia")]
+        public virtual Kolonia Kolonia { get; set; }
     }
 }

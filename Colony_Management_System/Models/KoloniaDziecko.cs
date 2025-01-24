@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
@@ -12,29 +13,36 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("dzieckoId")]
         [JsonProperty("dzieckoId")]
         public int DzieckoId { get; set; }
 
-        [Column("koloniaId")]
-        [JsonProperty("koloniaId")]
-        public int KoloniaId { get; set; }
-
-        [Column("statusId")]
-        [JsonProperty("statusId")]
-        public int StatusId { get; set; }
-
+        [Required]
         [Column("grupaId")]
         [JsonProperty("grupaId")]
         public int GrupaId { get; set; }
 
-        // Navigation properties
-        public Dziecko Dziecko { get; set; }
-        public Kolonia Kolonia { get; set; }
-        public Status Status { get; set; }
-        public Grupa Grupa { get; set; } // Add the navigation property for Grupa
+        [Required]
+        [Column("statusId")]
+        [JsonProperty("statusId")]
+        public int StatusId { get; set; }
 
-        // One-to-many relationship with Platnosc
-        public ICollection<Platnosc> Platnosc { get; set; }
+        [Required]
+        [Column("dataZapisu")]
+        [JsonProperty("dataZapisu")]
+        public int DataZapisu { get; set; }
+
+        [ForeignKey(nameof(DzieckoId))]
+        [JsonProperty("dziecko")]
+        public virtual Dziecko Dziecko { get; set; }
+
+        [ForeignKey(nameof(GrupaId))]
+        [JsonProperty("grupa")]
+        public virtual Grupa Grupa { get; set; }
+
+        [ForeignKey(nameof(StatusId))]
+        [JsonProperty("status")]
+        public virtual Status Status { get; set; }
     }
 }

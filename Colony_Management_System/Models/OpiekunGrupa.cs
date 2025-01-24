@@ -12,18 +12,17 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [ForeignKey("grupaId")]
         [Column("grupaId")]
         [JsonProperty("grupaId")]
         public int GrupaId { get; set; }
 
+        [ForeignKey("opiekunId")]
         [Column("opiekunId")]
         [JsonProperty("opiekunId")]
         public int OpiekunId { get; set; }
 
-        [ForeignKey("GrupaId")]
-        public Grupa Grupa { get; set; }
-
-        [ForeignKey("OpiekunId")]
-        public Opiekun Opiekun { get; set; }
+        public virtual Grupa Grupa { get; set; }
+        public virtual Opiekun Opiekun { get; set; }
     }
 }

@@ -12,24 +12,23 @@ namespace Colony_Management_System.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("email")]
         [JsonProperty("email")]
-        [StringLength(128)]
         public string Email { get; set; }
 
+        [Required]
         [Column("haslo")]
         [JsonProperty("haslo")]
         public string Haslo { get; set; }
 
+        [Required]
         [Column("uprId")]
         [JsonProperty("uprId")]
         public int UprId { get; set; }
 
-        [ForeignKey("UprId")]
-        public Upr Upr { get; set; }
-
-        public ICollection<Administrator> Administrator { get; set; }
-        public ICollection<Opiekun> Opiekun { get; set; }
-        public ICollection<Rodzic> Rodzic { get; set; }
+        [ForeignKey(nameof(UprId))]
+        [JsonProperty("upr")]
+        public virtual Upr Upr { get; set; }
     }
 }

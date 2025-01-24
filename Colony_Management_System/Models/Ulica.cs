@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -15,16 +15,13 @@ namespace Colony_Management_System.Models
 
         [Column("ulica")]
         [JsonProperty("ulica")]
-        [StringLength(64)]
-        public string Nazwa { get; set; }
+        public string UlicaNazwa { get; set; }
 
+        [ForeignKey("Miasto")]
         [Column("miastoId")]
         [JsonProperty("miastoId")]
         public int MiastoId { get; set; }
 
-        [ForeignKey("MiastoId")]
-        public Miasto Miasto { get; set; }
-
-        public ICollection<Adres> Adres { get; set; }
+        public virtual Miasto Miasto { get; set; }
     }
 }
