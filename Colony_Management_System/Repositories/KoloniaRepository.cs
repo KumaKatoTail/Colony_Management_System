@@ -32,7 +32,6 @@ namespace Colony_Management_System.Repositories
                     .Include(k => k.Firma)
                     .Include(k => k.Adres)
                     .Include(k => k.Forma)
-                    .Include(k => k.Cena)
                     .FirstOrDefaultAsync(k => k.Id == id);
             }
             catch (Exception ex)
