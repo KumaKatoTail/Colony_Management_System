@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Colony_Management_System.Models.DbContext;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -79,6 +76,18 @@ builder.Services.AddTransient<IAccountRepository, AccountRepository>(); // Rejes
 builder.Services.AddTransient<IUserService, UserService>(); // Rejestracja serwisu autoryzacji u¿ytkownika
 builder.Services.AddTransient<IKoloniaService, KoloniaService>();
 builder.Services.AddTransient<IKoloniaRepository, KoloniaRepository>();
+builder.Services.AddTransient<IDzieckoService, DzieckoService>();
+builder.Services.AddTransient<IDzieckoRepository, DzieckoRepository>();
+builder.Services.AddTransient<IGrupaRepository, GrupaRepository>();
+builder.Services.AddTransient<IGrupaService, GrupaService>();
+builder.Services.AddTransient<IKontoRepository, KontoRepository>();
+builder.Services.AddTransient<IKontoService, KontoService>();
+builder.Services.AddTransient<IKontoRepository2, KontoRepository2>();
+builder.Services.AddTransient<IKontoService2, KontoService2>();
+
+
+
+
 builder.Services.AddHttpContextAccessor(); // Jeœli u¿ywasz HttpContext w innych serwisach
 
 var app = builder.Build();

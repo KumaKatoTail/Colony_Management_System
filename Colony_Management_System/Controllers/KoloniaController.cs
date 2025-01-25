@@ -135,6 +135,31 @@ namespace Colony_Management_System.Controllers
             return Ok(kolonia);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetKolonieSummary()
+        {
+            try
+            {
+                // Pobierz listę wszystkich kolonii
+                var kolonie = await _koloniaService.GetAllKolonieAsync();
+
+                // Projekcja danych na uproszczony model
+                var result = kolonie.Select(k => new
+                {
+                    k.Nazwa,
+                    k.Opis,
+                    k.TerminOd
+                });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
         // Helper method to get UprId from token
         private int? GetUprIdFromToken()
         {

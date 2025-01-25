@@ -12,6 +12,7 @@ namespace Colony_Management_System.Repositories
         Task<Kolonia?> UpdateKoloniaAsync(int id, Kolonia kolonia);
         Task<bool> DeleteKoloniaAsync(int id);
         Task<Kolonia?> GetKoloniaByIdAsync(int id);
+        Task<IEnumerable<Kolonia>> GetAllKolonieAsync();
     }
 
     public class KoloniaRepository : IKoloniaRepository
@@ -101,5 +102,10 @@ namespace Colony_Management_System.Repositories
                 return false;
             }
         }
+        public async Task<IEnumerable<Kolonia>> GetAllKolonieAsync()
+        {
+            return await _context.Kolonia.ToListAsync();
+        }
+
     }
 }
