@@ -91,7 +91,7 @@ builder.Services.AddTransient<IKoloniaDzieckoService, KoloniaDzieckoService>();
 
 
 
-
+ 
 builder.Services.AddHttpContextAccessor(); // Jeœli u¿ywasz HttpContext w innych serwisach
 
 // Rejestracja konfiguracji PayPal
