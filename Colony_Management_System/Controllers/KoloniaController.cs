@@ -38,6 +38,7 @@ namespace Colony_Management_System.Controllers
                 kolonia.FormaId = 3;   // Przykładowe przypisanie FormaId
                 kolonia.TerminOd = DateTime.Now;  // Przykładowa data rozpoczęcia
                 kolonia.TerminDo = DateTime.Now.AddMonths(1);  // Przykładowa data zakończenia
+                kolonia.Cena = 0;  // Przykładowa cena
 
                 // Pozwalamy użytkownikowi uzupełnić tylko dane specyficzne dla kolonii
                 var result = await _koloniaService.AddKoloniaAsync(kolonia, uprId.Value);
@@ -146,9 +147,11 @@ namespace Colony_Management_System.Controllers
                 // Projekcja danych na uproszczony model
                 var result = kolonie.Select(k => new
                 {
+                    k.Id,
                     k.Nazwa,
                     k.Opis,
-                    k.TerminOd
+                    k.TerminOd,
+                    k.Cena
                 });
 
                 return Ok(result);

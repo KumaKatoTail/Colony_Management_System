@@ -28,6 +28,8 @@ namespace Colony_Management_System.Models
         [JsonProperty("opis")]
         public string Opis { get; set; }
 
+       
+
         [Required]
         [Column("limit")]
         [JsonProperty("limit")]

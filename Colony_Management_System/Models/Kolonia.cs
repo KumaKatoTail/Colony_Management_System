@@ -51,6 +51,11 @@ namespace Colony_Management_System.Models
         [Column("opis")]
         [JsonProperty("opis")]
         public string? Opis { get; set; }
+        
+        [Required]
+        [Column("cena")]
+        [JsonProperty("cena")]
+        public double Cena { get; set; }
 
         [MaxLength(32)]
         [Column("kraj")]
