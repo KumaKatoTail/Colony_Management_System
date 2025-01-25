@@ -84,6 +84,10 @@ builder.Services.AddTransient<IKontoRepository, KontoRepository>();
 builder.Services.AddTransient<IKontoService, KontoService>();
 builder.Services.AddTransient<IKontoRepository2, KontoRepository2>();
 builder.Services.AddTransient<IKontoService2, KontoService2>();
+builder.Services.AddScoped<IKoloniaDzieckoRepository, KoloniaDzieckoRepository>();
+builder.Services.AddScoped<IKoloniaDzieckoService, KoloniaDzieckoService>();
+
+
 
 
 
