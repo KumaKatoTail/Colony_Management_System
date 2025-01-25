@@ -84,8 +84,8 @@ builder.Services.AddTransient<IKontoRepository, KontoRepository>();
 builder.Services.AddTransient<IKontoService, KontoService>();
 builder.Services.AddTransient<IKontoRepository2, KontoRepository2>();
 builder.Services.AddTransient<IKontoService2, KontoService2>();
-builder.Services.AddScoped<IKoloniaDzieckoRepository, KoloniaDzieckoRepository>();
-builder.Services.AddScoped<IKoloniaDzieckoService, KoloniaDzieckoService>();
+builder.Services.AddTransient<IKoloniaDzieckoRepository, KoloniaDzieckoRepository>();
+builder.Services.AddTransient<IKoloniaDzieckoService, KoloniaDzieckoService>();
 
 
 
@@ -93,6 +93,14 @@ builder.Services.AddScoped<IKoloniaDzieckoService, KoloniaDzieckoService>();
 
 
 builder.Services.AddHttpContextAccessor(); // Jeœli u¿ywasz HttpContext w innych serwisach
+
+// Rejestracja konfiguracji PayPal
+builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PayPal"));
+
+// Rejestracja PayPalService
+builder.Services.AddTransient<PayPalService>();
+
+
 
 var app = builder.Build();
 
