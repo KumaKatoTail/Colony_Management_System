@@ -32,6 +32,14 @@ namespace Colony_Management_System.Controllers
 
             try
             {
+                // Ustawiamy wartości domyślne dla pól, które mają być przypisane odgórnie
+                kolonia.FirmaId = 1;  // Przykładowe przypisanie FirmaId
+                kolonia.AdresId = 2;   // Przykładowe przypisanie AdresId
+                kolonia.FormaId = 3;   // Przykładowe przypisanie FormaId
+                kolonia.TerminOd = DateTime.Now;  // Przykładowa data rozpoczęcia
+                kolonia.TerminDo = DateTime.Now.AddMonths(1);  // Przykładowa data zakończenia
+
+                // Pozwalamy użytkownikowi uzupełnić tylko dane specyficzne dla kolonii
                 var result = await _koloniaService.AddKoloniaAsync(kolonia, uprId.Value);
                 return CreatedAtAction(nameof(GetKolonia), new { id = result.Id }, result);
             }
@@ -41,30 +49,58 @@ namespace Colony_Management_System.Controllers
             }
         }
 
-        // Aktualizacja istniejącej kolonii
-        [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> UpdateKolonia(int id, [FromBody] Kolonia kolonia)
-        {
-            if (kolonia == null)
-                return BadRequest("Kolonia data is required.");
 
-            var uprId = GetUprIdFromToken();
-            if (uprId == null)
-                return Unauthorized("Invalid token.");
 
-            try
-            {
-                var result = await _koloniaService.UpdateKoloniaAsync(id, kolonia, uprId.Value);
-                if (result == null)
-                    return NotFound("Kolonia not found.");
-                return Ok(result);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return Unauthorized("Only administrators can update colonies.");
-            }
-        }
+        //[HttpPut("{id}")]
+        //[Authorize]
+        //public async Task<IActionResult> UpdateKolonia(int id, [FromBody] Kolonia kolonia)
+        //{
+        //    if (kolonia == null)
+        //        return BadRequest("Kolonia data is required.");
+
+        //    var uprId = GetUprIdFromToken();
+        //    if (uprId == null)
+        //        return Unauthorized("Invalid token.");
+
+        //    try
+        //    {
+        //        // Sprawdzamy, czy kolonia istnieje w bazie danych
+        //        var existingKolonia = await _koloniaService.GetKoloniaByIdAsync(id);
+        //        if (existingKolonia == null)
+        //            return NotFound("Kolonia not found.");
+
+        //        // Jeśli kolonia istnieje, aktualizujemy jej dane
+        //        existingKolonia.Nazwa = kolonia.Nazwa ?? existingKolonia.Nazwa;
+        //        existingKolonia.TrasaWedrowna = kolonia.TrasaWedrowna ?? existingKolonia.TrasaWedrowna;
+        //        existingKolonia.Opis = kolonia.Opis ?? existingKolonia.Opis;
+        //        existingKolonia.Kraj = kolonia.Kraj ?? existingKolonia.Kraj;
+        //        existingKolonia.TerminOd = kolonia.TerminOd != default ? kolonia.TerminOd : existingKolonia.TerminOd;
+        //        existingKolonia.TerminDo = kolonia.TerminDo != default ? kolonia.TerminDo : existingKolonia.TerminDo;
+
+        //        // Zaktualizowanie kolonii
+        //        var result = await _koloniaService.UpdateKoloniaAsync()    .UpdateKoloniaAsync(existingKolonia, uprId.Value);
+
+        //        // Zwracamy tylko dane z tabeli Kolonia (bez powiązanych tabel)
+        //        return Ok(new
+        //        {
+        //            result.Id,
+        //            result.FirmaId,
+        //            result.AdresId,
+        //            result.FormaId,
+        //            result.TerminOd,
+        //            result.TerminDo,
+        //            result.Nazwa,
+        //            result.TrasaWedrowna,
+        //            result.Opis,
+        //            result.Kraj
+        //        });
+        //    }
+        //    catch (UnauthorizedAccessException)
+        //    {
+        //        return Unauthorized("Only administrators can update colonies.");
+        //    }
+        //}
+
 
         // Usuwanie kolonii
         [HttpDelete("{id}")]
@@ -73,7 +109,7 @@ namespace Colony_Management_System.Controllers
         {
             var uprId = GetUprIdFromToken();
             if (uprId == null)
-                return Unauthorized("Invalid token.");
+                return Unauthorized("Invalid token." + uprId);
 
             try
             {
@@ -102,10 +138,15 @@ namespace Colony_Management_System.Controllers
         // Helper method to get UprId from token
         private int? GetUprIdFromToken()
         {
-            var uprIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // Odczytanie claimu "UprId" z tokenu
+            var uprIdClaim = User.FindFirst("UprId")?.Value;
+
+            // Próba konwersji na liczbę całkowitą
             if (int.TryParse(uprIdClaim, out var uprId))
                 return uprId;
-            return null;
+
+            return null; // Zwraca null, jeśli UprId nie istnieje lub nie jest liczbą
         }
+
     }
 }

@@ -53,14 +53,23 @@ namespace Colony_Management_System.Controllers
             return Ok(new { Token = token });
         }
 
-
-        // Endpoint do weryfikacji tokenu
+        // Endpoint do weryfikacji 
         [HttpPost("CheckToken")]
         [Authorize]
         public IActionResult CheckToken()
         {
-            return Ok(new { Message = "Token is valid." });
+            // Pobieranie listy claimów z kontekstu użytkownika
+            var claims = HttpContext.User.Claims
+                .ToDictionary(claim => claim.Type, claim => claim.Value);
+
+            // Zwracanie danych zawartych w tokenie
+            return Ok(new
+            {
+                Message = "Token is valid.",
+                TokenData = claims
+            });
         }
+
 
         // Generowanie tokenu JWT
         private string GenerateJwtToken(Konto konto)
