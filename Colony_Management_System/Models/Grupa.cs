@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using PayPal;
 
 namespace Colony_Management_System.Models
 {
     [Table("Grupa")]
     public class Grupa
     {
+      
         [Key]
         [Column("id")]
         [JsonProperty("id")]
@@ -28,7 +30,7 @@ namespace Colony_Management_System.Models
         [JsonProperty("opis")]
         public string Opis { get; set; }
 
-       
+
 
         [Required]
         [Column("limit")]
@@ -38,5 +40,7 @@ namespace Colony_Management_System.Models
         [ForeignKey(nameof(KoloniaId))]
         [JsonProperty("kolonia")]
         public virtual Kolonia Kolonia { get; set; }
+
+        
     }
 }

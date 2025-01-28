@@ -15,7 +15,7 @@ namespace Colony_Management_System.Models
 
         [Column("ulica")]
         [JsonProperty("ulica")]
-        public string UlicaNazwa { get; set; }
+        public string ulica { get; set; }
 
         [ForeignKey("Miasto")]
         [Column("miastoId")]

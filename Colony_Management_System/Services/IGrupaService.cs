@@ -7,5 +7,6 @@ namespace Colony_Management_System.Services
     public interface IGrupaService
     {
         Task<List<Grupa>> GetGrupyByKoloniaIdAsync(int koloniaId);
+        Task<IEnumerable<GrupaDto>> GetGrupyByKoloniaIdZSAsync(int koloniaId);
     }
 }

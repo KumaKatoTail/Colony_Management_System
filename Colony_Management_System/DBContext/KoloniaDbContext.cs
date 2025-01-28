@@ -200,5 +200,12 @@ namespace Colony_Management_System.Models.DbContext
         public DbSet<StatusPlatnosci> StatusPlatnosci { get; set; }
         public DbSet<Upr> Upr { get; set; }
         public DbSet<Waluta> Waluta { get; set; }
+        public DbSet<AdresDto> AdresDto { get; set; }
+        public DbSet<FirmaDto> FirmaDto { get; set; }
+        public DbSet<FormaDto> FormaDto { get; set; }
+        public DbSet<KoloniaDto> KoloniaDto { get; set; }
+        //public DbSet<KoloniaDzieckoCreateDTO> KoloniaDzieckoCreateDTO { get; set; }
+        //public DbSet<KoloniaDzieckoRodzicDTO> KoloniaDzieckoRodzicDTO { get; set; }
+        //public DbSet<KoloniaDzieckoUpdateDTO> KoloniaDzieckoUpdateDTO { get; set; }
     }
 }

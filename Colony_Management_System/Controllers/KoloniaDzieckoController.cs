@@ -25,6 +25,35 @@ namespace Colony_Management_System.Controllers
             await _koloniaDzieckoService.CreateKoloniaDzieckoAsync(dto);
             return Ok("KoloniaDziecko created successfully.");
         }
+        [HttpPost("add-by-id")]
+        public async Task<IActionResult> CreateKoloniaDzieckoById(
+    [FromQuery] int dzieckoId,
+    [FromQuery] int grupaId,
+    [FromQuery] int statusId,
+    [FromQuery] DateTime dataZapisu)
+        {
+            try
+            {
+                // Tworzenie DTO
+                var koloniaDzieckoDto = new KoloniaDzieckoCreateDTO
+                {
+                    DzieckoId = dzieckoId,
+                    GrupaId = grupaId,
+                    StatusId = statusId,
+                    DataZapisu = dataZapisu
+                };
+
+                // Wywołanie serwisu z DTO
+                await _koloniaDzieckoService.CreateKoloniaDzieckoAsync(koloniaDzieckoDto);
+
+                return Ok("KoloniaDziecko created successfully using query parameters.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetKoloniaDzieckoById(int id)
@@ -69,5 +98,15 @@ namespace Colony_Management_System.Controllers
             await _koloniaDzieckoService.DeleteKoloniaDzieckoAsync(id);
             return Ok("KoloniaDziecko deleted successfully.");
         }
+        [HttpGet("dzieci/{idRodzica}")]
+        public async Task<IActionResult> GetKoloniedzieci(int idRodzica)
+        {
+            var dzieciNaKoloniach = await _koloniaDzieckoService.GetKoloniedzieciByRodzicIdAsync(idRodzica);
+            if (dzieciNaKoloniach == null || !dzieciNaKoloniach.Any())
+                return NotFound("No children found for the given parent.");
+
+            return Ok(dzieciNaKoloniach);
+        }
+
     }
 }

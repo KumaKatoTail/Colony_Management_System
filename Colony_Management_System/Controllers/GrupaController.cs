@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Colony_Management_System.Services;
 
 namespace Colony_Management_System.Controllers
@@ -36,6 +34,23 @@ namespace Colony_Management_System.Controllers
                 });
 
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpGet("kolonia/{koloniaId}/wolne-miejsca")]
+        public async Task<IActionResult> GetGrupyWithWolnemiejscaByKoloniaId(int koloniaId)
+        {
+            try
+            {
+                var grupy = await _grupaService.GetGrupyByKoloniaIdZSAsync(koloniaId);
+
+                if (grupy == null || !grupy.Any())
+                    return NotFound("No groups found for the given colony ID.");
+
+                return Ok(grupy);
             }
             catch (Exception ex)
             {

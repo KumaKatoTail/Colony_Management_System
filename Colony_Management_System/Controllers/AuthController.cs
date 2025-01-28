@@ -80,10 +80,16 @@ namespace Colony_Management_System.Controllers
 
             var claims = new[]
             {
-        new Claim(ClaimTypes.Name, konto.Email),
-        new Claim("UprId", konto.UprId.ToString()), 
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-    };
+                new Claim(ClaimTypes.Email, konto.Email), // Użyj ClaimTypes.Email zamiast Name
+                new Claim("UprId", konto.UprId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+            //            var claims = new[]
+            //{
+            //    new Claim("email", konto.Email), // Dodanie claimu dla emaila
+            //    new Claim("UprId", konto.UprId.ToString()),
+            //    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            //};
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

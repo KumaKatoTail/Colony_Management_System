@@ -10,5 +10,6 @@ namespace Colony_Management_System.Services
         Task CreateKoloniaDzieckoAsync(KoloniaDzieckoCreateDTO dto);
         Task UpdateKoloniaDzieckoAsync(KoloniaDziecko koloniaDziecko);
         Task DeleteKoloniaDzieckoAsync(int id);
+        Task<List<KoloniaDzieckoRodzicDTO>> GetKoloniedzieciByRodzicIdAsync(int rodzicId); // Add this method
     }
 }
