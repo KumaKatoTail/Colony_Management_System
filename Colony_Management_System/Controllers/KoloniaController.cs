@@ -56,56 +56,50 @@ namespace Colony_Management_System.Controllers
 
 
 
-        //[HttpPut("{id}")]
-        //[Authorize]
-        //public async Task<IActionResult> UpdateKolonia(int id, [FromBody] Kolonia kolonia)
-        //{
-        //    if (kolonia == null)
-        //        return BadRequest("Kolonia data is required.");
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateKolonia(int id, [FromBody] Kolonia kolonia)
+        {
+            if (kolonia == null)
+                return BadRequest("Kolonia data is required.");
 
-        //    var uprId = GetUprIdFromToken();
-        //    if (uprId == null)
-        //        return Unauthorized("Invalid token.");
+            var uprId = GetUprIdFromToken();
+            if (uprId == null)
+                return Unauthorized("Invalid token.");
 
-        //    try
-        //    {
-        //        // Sprawdzamy, czy kolonia istnieje w bazie danych
-        //        var existingKolonia = await _koloniaService.GetKoloniaByIdAsync(id);
-        //        if (existingKolonia == null)
-        //            return NotFound("Kolonia not found.");
+            try
+            {
+                // Update the colony using the service
+                var result = await _koloniaService.UpdateKoloniaAsync(id, kolonia, uprId.Value);
 
-        //        // Jeśli kolonia istnieje, aktualizujemy jej dane
-        //        existingKolonia.Nazwa = kolonia.Nazwa ?? existingKolonia.Nazwa;
-        //        existingKolonia.TrasaWedrowna = kolonia.TrasaWedrowna ?? existingKolonia.TrasaWedrowna;
-        //        existingKolonia.Opis = kolonia.Opis ?? existingKolonia.Opis;
-        //        existingKolonia.Kraj = kolonia.Kraj ?? existingKolonia.Kraj;
-        //        existingKolonia.TerminOd = kolonia.TerminOd != default ? kolonia.TerminOd : existingKolonia.TerminOd;
-        //        existingKolonia.TerminDo = kolonia.TerminDo != default ? kolonia.TerminDo : existingKolonia.TerminDo;
-
-        //        // Zaktualizowanie kolonii
-        //        var result = await _koloniaService.UpdateKoloniaAsync()    .UpdateKoloniaAsync(existingKolonia, uprId.Value);
-
-        //        // Zwracamy tylko dane z tabeli Kolonia (bez powiązanych tabel)
-        //        return Ok(new
-        //        {
-        //            result.Id,
-        //            result.FirmaId,
-        //            result.AdresId,
-        //            result.FormaId,
-        //            result.TerminOd,
-        //            result.TerminDo,
-        //            result.Nazwa,
-        //            result.TrasaWedrowna,
-        //            result.Opis,
-        //            result.Kraj
-        //        });
-        //    }
-        //    catch (UnauthorizedAccessException)
-        //    {
-        //        return Unauthorized("Only administrators can update colonies.");
-        //    }
-        //}
-
+                // Return the updated colony
+                return Ok(new
+                {
+                    result.Id,
+                    result.FirmaId,
+                    result.AdresId,
+                    result.FormaId,
+                    result.TerminOd,
+                    result.TerminDo,
+                    result.Nazwa,
+                    result.TrasaWedrowna,
+                    result.Opis,
+                    result.Kraj
+                });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized("Only administrators can update colonies.");
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("Kolonia not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         // Usuwanie kolonii
         [HttpDelete("{id}")]
@@ -250,6 +244,149 @@ namespace Colony_Management_System.Controllers
 
             return Ok(koloniaDto);
         }
+
+        [HttpGet("future/{firmaId}")]
+        public async Task<IActionResult> GetFutureKolonieByFirma(int firmaId)
+        {
+            try
+            {
+                // Pobierz listę wszystkich kolonii w danej firmie
+                var kolonie = await _koloniaService.GetAllKolonieAsync();
+
+                // Filtruj tylko przyszłe kolonie w danej firmie
+                var futureKolonie = kolonie.Where(k => k.FirmaId == firmaId && k.TerminOd > DateTime.Now).ToList();
+
+                // Projekcja danych na uproszczony model
+                var result = futureKolonie.Select(k => new
+                {
+                    k.Id,
+                    k.Nazwa,
+                    k.Opis,
+                    k.TerminOd,
+                    k.TerminDo,
+                    k.Cena
+                });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("firma/{firmaId}")]
+        public async Task<IActionResult> GetKolonieByFirma(int firmaId)
+        {
+            try
+            {
+                // Pobierz listę wszystkich kolonii w danej firmie
+                var kolonie = await _koloniaService.GetAllKolonieAsync();
+
+                // Filtruj kolonie dla danej firmy
+                var filteredKolonie = kolonie.Where(k => k.FirmaId == firmaId).ToList();
+
+                // Projekcja danych na uproszczony model
+                var result = filteredKolonie.Select(k => new
+                {
+                    k.Id,
+                    k.Nazwa,
+                    k.Opis,
+                    k.TerminOd,
+                    k.TerminDo,
+                    k.Cena
+                });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("firma/{firmaId}")]
+        [Authorize]
+        public async Task<IActionResult> AddKoloniaToFirma(int firmaId, [FromBody] Kolonia kolonia)
+        {
+            if (kolonia == null)
+                return BadRequest("Kolonia data is required.");
+
+            var uprId = GetUprIdFromToken();
+            if (uprId == null)
+                return Unauthorized("Invalid token.");
+
+            try
+            {
+                // Przypisz FirmaId do kolonii
+                kolonia.FirmaId = firmaId;
+
+                var result = await _koloniaService.AddKoloniaAsync(kolonia, uprId.Value);
+                return CreatedAtAction(nameof(GetKoloniaNice), new { id = result.Id }, result);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized("Only administrators can add colonies.");
+            }
+        }
+
+        [HttpPut("{id}/firma/{firmaId}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateKoloniaInFirma(int id, int firmaId, [FromBody] Kolonia kolonia)
+        {
+            if (kolonia == null)
+                return BadRequest("Kolonia data is required.");
+
+            var uprId = GetUprIdFromToken();
+            if (uprId == null)
+                return Unauthorized("Invalid token.");
+
+            try
+            {
+                // Sprawdź, czy kolonia należy do firmy
+                var existingKolonia = await _koloniaService.GetKoloniaByIdAsync(id);
+                if (existingKolonia == null || existingKolonia.FirmaId != firmaId)
+                    return NotFound("Kolonia not found in the specified company.");
+
+                var result = await _koloniaService.UpdateKoloniaAsync(id, kolonia, uprId.Value);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized("Only administrators can update colonies.");
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("Kolonia not found.");
+            }
+        }
+
+        [HttpDelete("{id}/firma/{firmaId}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteKoloniaInFirma(int id, int firmaId)
+        {
+            var uprId = GetUprIdFromToken();
+            if (uprId == null)
+                return Unauthorized("Invalid token.");
+
+            try
+            {
+                // Sprawdź, czy kolonia należy do firmy
+                var existingKolonia = await _koloniaService.GetKoloniaByIdAsync(id);
+                if (existingKolonia == null || existingKolonia.FirmaId != firmaId)
+                    return NotFound("Kolonia not found in the specified company.");
+
+                var success = await _koloniaService.DeleteKoloniaAsync(id, uprId.Value);
+                if (!success)
+                    return NotFound("Kolonia not found.");
+                return NoContent();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized("Only administrators can delete colonies.");
+            }
+        }
+
 
 
 

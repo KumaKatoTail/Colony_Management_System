@@ -9,7 +9,8 @@ namespace Colony_Management_System.Repositories
     public interface IKoloniaRepository
     {
         Task<Kolonia?> AddKoloniaAsync(Kolonia kolonia);
-        Task<Kolonia?> UpdateKoloniaAsync(int id, Kolonia kolonia);
+        Task<Kolonia> UpdateKoloniaAsync(int id, Kolonia kolonia);
+
         Task<bool> DeleteKoloniaAsync(int id);
         Task<Kolonia?> GetKoloniaByIdAsync(int id);
         Task<IEnumerable<Kolonia>> GetAllKolonieAsync();
@@ -56,34 +57,20 @@ namespace Colony_Management_System.Repositories
             }
         }
 
-        public async Task<Kolonia?> UpdateKoloniaAsync(int id, Kolonia kolonia)
+        public async Task<Kolonia> UpdateKoloniaAsync(int id, Kolonia kolonia)
         {
-            try
-            {
-                var existingKolonia = await _context.Kolonia.FindAsync(id);
-                if (existingKolonia == null)
-                    return null;
+            var existingKolonia = await _context.Kolonia.FindAsync(id);
+            if (existingKolonia == null)
+                throw new KeyNotFoundException("Kolonia not found.");
 
-                existingKolonia.FirmaId = kolonia.FirmaId;
-                existingKolonia.AdresId = kolonia.AdresId;
-                existingKolonia.FormaId = kolonia.FormaId;
-                existingKolonia.TerminOd = kolonia.TerminOd;
-                existingKolonia.TerminDo = kolonia.TerminDo;
-                existingKolonia.TrasaWedrowna = kolonia.TrasaWedrowna;
-                existingKolonia.Kraj = kolonia.Kraj;
-                existingKolonia.Nazwa = kolonia.Nazwa;
-                existingKolonia.Opis = kolonia.Opis;
-                existingKolonia.Cena = kolonia.Cena;
+            // Aktualizacja danych
+            _context.Entry(existingKolonia).CurrentValues.SetValues(kolonia);
 
-                await _context.SaveChangesAsync();
-                return existingKolonia;
-            }
-            catch (Exception ex)
-            {
-                // Log the exception here if necessary
-                return null;
-            }
+            // Zapis zmian w bazie
+            await _context.SaveChangesAsync();
+            return existingKolonia;
         }
+
 
         public async Task<bool> DeleteKoloniaAsync(int id)
         {

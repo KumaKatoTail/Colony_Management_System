@@ -88,12 +88,15 @@ builder.Services.AddTransient<IKontoRepository2, KontoRepository2>();
 builder.Services.AddTransient<IKontoService2, KontoService2>();
 builder.Services.AddTransient<IKoloniaDzieckoRepository, KoloniaDzieckoRepository>();
 builder.Services.AddTransient<IKoloniaDzieckoService, KoloniaDzieckoService>();
+builder.Services.AddTransient<PlatnoscService>();
+builder.Services.AddTransient<RodzicService>();
 
 
 
 
 
- 
+
+
 builder.Services.AddHttpContextAccessor(); // Jeœli u¿ywasz HttpContext w innych serwisach
 
 // Rejestracja konfiguracji PayPal

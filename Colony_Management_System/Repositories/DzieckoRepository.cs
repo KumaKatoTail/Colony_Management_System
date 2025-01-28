@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Colony_Management_System.Models.DbContext;
+using Colony_Management_System.Models;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Colony_Management_System.Models;
-using Colony_Management_System.Models.DbContext;
 
 namespace Colony_Management_System.Repositories
 {
@@ -22,6 +20,35 @@ namespace Colony_Management_System.Repositories
                 .Where(dr => dr.RodzicId == rodzicId)
                 .Select(dr => dr.Dziecko)
                 .ToListAsync();
+        }
+
+        public async Task<Dziecko> GetDzieckoByIdAsync(int id)
+        {
+            return await _dbContext.Dziecko.FindAsync(id);
+        }
+
+        public async Task<Dziecko> AddDzieckoAsync(Dziecko dziecko)
+        {
+            _dbContext.Dziecko.Add(dziecko);
+            await _dbContext.SaveChangesAsync();
+            return dziecko;
+        }
+
+        public async Task<Dziecko> UpdateDzieckoAsync(Dziecko dziecko)
+        {
+            _dbContext.Dziecko.Update(dziecko);
+            await _dbContext.SaveChangesAsync();
+            return dziecko;
+        }
+
+        public async Task<bool> DeleteDzieckoAsync(int id)
+        {
+            var dziecko = await _dbContext.Dziecko.FindAsync(id);
+            if (dziecko == null) return false;
+
+            _dbContext.Dziecko.Remove(dziecko);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

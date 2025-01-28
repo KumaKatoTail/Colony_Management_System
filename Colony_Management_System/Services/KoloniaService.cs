@@ -35,14 +35,38 @@ namespace Colony_Management_System.Services
             return await _koloniaRepository.AddKoloniaAsync(kolonia);
         }
 
-        public async Task<Kolonia> UpdateKoloniaAsync(int id, Kolonia kolonia, int uprId)
+        public async Task<Kolonia> UpdateKoloniaAsync(int id, Kolonia updatedKolonia, int uprId)
         {
             if (uprId != 1) // Sprawdzenie, czy użytkownik jest administratorem
                 throw new UnauthorizedAccessException("Only administrators can update colonies.");
 
-            return await _koloniaRepository.UpdateKoloniaAsync(id, kolonia);
-        }
+            // Pobranie istniejącej kolonii
+            var existingKolonia = await _koloniaRepository.GetKoloniaByIdAsync(id);
+            if (existingKolonia == null)
+                throw new KeyNotFoundException("Kolonia not found.");
 
+            // Aktualizacja tylko przekazanych pól
+            if (!string.IsNullOrEmpty(updatedKolonia.Nazwa))
+                existingKolonia.Nazwa = updatedKolonia.Nazwa;
+
+            if (!string.IsNullOrEmpty(updatedKolonia.TrasaWedrowna))
+                existingKolonia.TrasaWedrowna = updatedKolonia.TrasaWedrowna;
+
+            if (!string.IsNullOrEmpty(updatedKolonia.Opis))
+                existingKolonia.Opis = updatedKolonia.Opis;
+
+            if (!string.IsNullOrEmpty(updatedKolonia.Kraj))
+                existingKolonia.Kraj = updatedKolonia.Kraj;
+
+            if (updatedKolonia.TerminOd != default)
+                existingKolonia.TerminOd = updatedKolonia.TerminOd;
+
+            if (updatedKolonia.TerminDo != default)
+                existingKolonia.TerminDo = updatedKolonia.TerminDo;
+
+            // Zapis zmian
+            return await _koloniaRepository.UpdateKoloniaAsync(id, existingKolonia);
+        }
         public async Task<bool> DeleteKoloniaAsync(int id, int uprId)
         {
             if (uprId != 1) // Sprawdzenie, czy użytkownik jest administratorem
