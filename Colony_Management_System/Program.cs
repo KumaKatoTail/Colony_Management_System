@@ -90,6 +90,8 @@ builder.Services.AddTransient<IKoloniaDzieckoRepository, KoloniaDzieckoRepositor
 builder.Services.AddTransient<IKoloniaDzieckoService, KoloniaDzieckoService>();
 builder.Services.AddTransient<PlatnoscService>();
 builder.Services.AddTransient<RodzicService>();
+builder.Services.AddTransient<IFirmaService, FirmaService>();
+builder.Services.AddTransient<IAdministratorService, AdministratorService>();
 
 
 
