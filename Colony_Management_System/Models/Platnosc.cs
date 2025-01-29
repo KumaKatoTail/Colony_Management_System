@@ -24,7 +24,7 @@ namespace Colony_Management_System.Models
 
         [Column("kwota")]
         [JsonProperty("kwota")]
-        public double Kwota { get; set; }
+        public decimal Kwota { get; set; }
 
         [Column("dataPlatnosci")]
         [JsonProperty("dataPlatnosci")]

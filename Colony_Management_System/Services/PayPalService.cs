@@ -1,36 +1,45 @@
-﻿
+﻿using Colony_Management_System.Models.DbContext;
+using Microsoft.Extensions.Configuration;
 using PayPal.Api;
-using Microsoft.Extensions.Options;
-using Colony_Management_System.Services;
+using PayPalHttp;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading;
 
 namespace Colony_Management_System.Services
 {
     public class PayPalService
     {
-        private readonly PayPalSettings _payPalSettings;
+        private readonly string _clientId;
+        private readonly string _clientSecret;
+        private readonly KoloniaDbContext _context;
 
-        public PayPalService(IOptions<PayPalSettings> payPalSettings)
+        public PayPalService(IConfiguration configuration, KoloniaDbContext context)
         {
-            _payPalSettings = payPalSettings.Value;
+            _clientId = configuration["PayPal:ClientId"];
+            _clientSecret = configuration["PayPal:ClientSecret"];
+            _context = context;
         }
 
-        private APIContext GetApiContext()
+        private APIContext GetAPIContext()
         {
-            var accessToken = new OAuthTokenCredential(_payPalSettings.ClientId, _payPalSettings.ClientSecret).GetAccessToken();
+            var config = new Dictionary<string, string>
+            {
+                { "mode", "sandbox" } // Set to "live" in production
+            };
+            var accessToken = new OAuthTokenCredential(_clientId, _clientSecret, config).GetAccessToken();
             return new APIContext(accessToken);
         }
 
-        public Payment CreatePayment(decimal amount, string currency)
+        public Payment CreatePayment(decimal amount, string currency, string returnUrl, string cancelUrl)
         {
-            var apiContext = GetApiContext();
+            var apiContext = GetAPIContext();
 
             var payment = new Payment
             {
                 intent = "sale",
-                payer = new Payer
-                {
-                    payment_method = "paypal"
-                },
+                payer = new Payer { payment_method = "paypal" },
                 transactions = new List<Transaction>
                 {
                     new Transaction
@@ -38,29 +47,45 @@ namespace Colony_Management_System.Services
                         amount = new Amount
                         {
                             currency = currency,
-                            total = amount.ToString()
+                            total = amount.ToString("F2") // Ensure 2 decimal places
                         },
-                        description = "Płatność za kolonie"
+                        description = "Opłata za kolonię"
                     }
                 },
                 redirect_urls = new RedirectUrls
                 {
-                    return_url = "https://yourapp.com/payment/success",
-                    cancel_url = "https://yourapp.com/payment/cancel"
+                    return_url = returnUrl,
+                    cancel_url = cancelUrl
                 }
             };
 
-            return payment.Create(apiContext);
+            return ExecuteWithRetry(() => payment.Create(apiContext));
         }
 
         public Payment ExecutePayment(string paymentId, string payerId)
         {
-            var apiContext = GetApiContext();
+            var apiContext = GetAPIContext();
             var paymentExecution = new PaymentExecution { payer_id = payerId };
-            var payment = new Payment { id = paymentId };
+            var payment = new Payment() { id = paymentId };
 
-            return payment.Execute(apiContext, paymentExecution);
+            return ExecuteWithRetry(() => payment.Execute(apiContext, paymentExecution));
+        }
+
+        private T ExecuteWithRetry<T>(Func<T> action, int maxRetries = 3, int delayMilliseconds = 1000)
+        {
+            int retries = 0;
+            while (true)
+            {
+                try
+                {
+                    return action();
+                }
+                catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.ServiceUnavailable && retries < maxRetries )
+                {
+                    retries++;
+                    Thread.Sleep(delayMilliseconds);
+                }
+            }
         }
     }
 }
-
