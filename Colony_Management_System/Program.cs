@@ -108,9 +108,6 @@ builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("Pay
 builder.Services.AddTransient<PayPalService>();
 
 
-
-var app = builder.Build();
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
@@ -119,8 +116,9 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod());
 });
 
+var app = builder.Build();
 
-app.UseCors("AllowReactApp");
+
 
 // Konfiguracja HTTP request pipeline
 #if DEBUG
@@ -136,12 +134,17 @@ app.UseSwaggerUI(c =>
 });
 #endif
 
+
+
+
+
 // Konfiguracja autentykacji i autoryzacji
 app.UseAuthentication();
 app.UseAuthorization();
 
 // Mapowanie kontrolerów
 app.MapControllers();
+app.UseCors("AllowReactApp");
 
 app.Run();
 

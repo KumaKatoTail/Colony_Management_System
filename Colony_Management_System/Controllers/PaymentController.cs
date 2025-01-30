@@ -41,13 +41,6 @@ namespace Colony_Management_System.Controllers
                 return BadRequest("Nie znaleziono rodzaju płatności o podanym ID.");
             }
 
-            // Validate that the waluta_id exists
-            bool walutaExists = await _platnoscService.WalutaExistsAsync(request.WalutaId);
-            if (!walutaExists)
-            {
-                return BadRequest("Nie znaleziono waluty o podanym ID.");
-            }
-
             // Tworzenie obiektu płatności w bazie
             var newPayment = new Platnosc
             {
@@ -82,15 +75,12 @@ namespace Colony_Management_System.Controllers
                 return Ok(new { Url = approvalUrl });
             }
             catch (PaymentsException ex)
-            
-            
-          {
+            {
                 // Log the request and response for debugging
                 Console.WriteLine("PayPal API Status Code: " + ex.StatusCode);
                 Console.WriteLine("PayPal API Response: " + ex.Response);
                 return BadRequest("Błąd podczas tworzenia płatności PayPal.");
             }
-            
         }
 
         // Akcja po powrocie z PayPal

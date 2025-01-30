@@ -1,6 +1,7 @@
 ﻿using Colony_Management_System.Models.DbContext;
 using Microsoft.Extensions.Configuration;
 using PayPal.Api;
+using PayPal.Exception;
 using PayPalHttp;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,23 @@ namespace Colony_Management_System.Services
         {
             var apiContext = GetAPIContext();
 
+            // Validate currency code
+            if (string.IsNullOrWhiteSpace(currency) || currency.Length != 3)
+            {
+                throw new ArgumentException("Invalid currency code", nameof(currency));
+            }
+
+            // Validate URLs
+            if (!Uri.IsWellFormedUriString(returnUrl, UriKind.Absolute))
+            {
+                throw new ArgumentException("Invalid return URL", nameof(returnUrl));
+            }
+
+            if (!Uri.IsWellFormedUriString(cancelUrl, UriKind.Absolute))
+            {
+                throw new ArgumentException("Invalid cancel URL", nameof(cancelUrl));
+            }
+
             var payment = new Payment
             {
                 intent = "sale",
@@ -47,9 +65,23 @@ namespace Colony_Management_System.Services
                         amount = new Amount
                         {
                             currency = currency,
-                            total = amount.ToString("F2") // Ensure 2 decimal places
+                            total = amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture) // Ensure 2 decimal places with dot separator
                         },
-                        description = "Opłata za kolonię"
+                        description = "Opłata za kolonię",
+                        item_list = new ItemList
+                        {
+                            items = new List<Item>
+                            {
+                                new Item
+                                {
+                                    name = "Kolonia",
+                                    currency = currency,
+                                    price = amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture), // Ensure 2 decimal places with dot separator
+                                    quantity = "1",
+                                    sku = "sku"
+                                }
+                            }
+                        }
                     }
                 },
                 redirect_urls = new RedirectUrls
@@ -59,7 +91,23 @@ namespace Colony_Management_System.Services
                 }
             };
 
-            return ExecuteWithRetry(() => payment.Create(apiContext));
+            try
+            {
+                Console.WriteLine("Creating PayPal payment with the following details:");
+                Console.WriteLine($"Amount: {amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}");
+                Console.WriteLine($"Currency: {currency}");
+                Console.WriteLine($"Return URL: {returnUrl}");
+                Console.WriteLine($"Cancel URL: {cancelUrl}");
+
+                return ExecuteWithRetry(() => payment.Create(apiContext));
+            }
+            catch (PaymentsException ex)
+            {
+                // Log the request and response for debugging
+                Console.WriteLine("PayPal API Status Code: " + ex.StatusCode);
+                Console.WriteLine("PayPal API Response: " + ex.Response);
+                throw;
+            }
         }
 
         public Payment ExecutePayment(string paymentId, string payerId)
@@ -80,7 +128,7 @@ namespace Colony_Management_System.Services
                 {
                     return action();
                 }
-                catch (HttpException ex) when (ex.StatusCode == HttpStatusCode.ServiceUnavailable && retries < maxRetries )
+                catch (PayPal.HttpException ex) when (ex.StatusCode == HttpStatusCode.ServiceUnavailable && retries < maxRetries )
                 {
                     retries++;
                     Thread.Sleep(delayMilliseconds);
