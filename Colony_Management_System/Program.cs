@@ -111,6 +111,17 @@ builder.Services.AddTransient<PayPalService>();
 
 var app = builder.Build();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy => policy.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
+
+
+app.UseCors("AllowReactApp");
+
 // Konfiguracja HTTP request pipeline
 #if DEBUG
 app.UseSwagger();
